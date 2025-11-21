@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import eventsDal, { EventsDal, CreateEventParams } from '../dal/events';
-import sessionsDal, { SessionsDal, CreateSessionParams } from '../dal/sessions';
+import sessionsDal, { SessionsDal } from '../dal/sessions';
 import userAgentService, { UserAgentService } from '../services/userAgent';
 import geolocationService, { GeolocationService } from '../services/geolocation';
+import sessionsService, { SessionsService, SessionMetadata } from '../services/sessions';
 
 export interface TrackEventRequest {
   event_type: string;
@@ -29,17 +30,20 @@ export class TrackingController {
   private sessionsDal: SessionsDal;
   private userAgentService: UserAgentService;
   private geolocationService: GeolocationService;
+  private sessionsService: SessionsService;
 
   constructor(
     eventsDalInstance: EventsDal = eventsDal,
     sessionsDalInstance: SessionsDal = sessionsDal,
     userAgentServiceInstance: UserAgentService = userAgentService,
-    geolocationServiceInstance: GeolocationService = geolocationService
+    geolocationServiceInstance: GeolocationService = geolocationService,
+    sessionsServiceInstance: SessionsService = sessionsService
   ) {
     this.eventsDal = eventsDalInstance;
     this.sessionsDal = sessionsDalInstance;
     this.userAgentService = userAgentServiceInstance;
     this.geolocationService = geolocationServiceInstance;
+    this.sessionsService = sessionsServiceInstance;
   }
 
   /**
@@ -130,42 +134,27 @@ export class TrackingController {
         console.error('Failed to insert event:', err);
       });
 
-      // Upsert session record
-      if (isNewSession) {
-        // Create new session
-        const sessionParams: CreateSessionParams = {
-          project_id: projectId,
-          session_id,
-          ip_hash: geolocation.ipHash || '',
-          user_agent: userAgentString || undefined,
-          country: geolocation.country || undefined,
-          browser: parsedUserAgent.browser.name || undefined,
-          os: parsedUserAgent.os.name || undefined,
-          device_type: parsedUserAgent.device.type || undefined,
-          referrer: referrer || undefined,
-          landing_page: url,
-          screen_width: screen_width || undefined,
-          screen_height: screen_height || undefined,
-          language: language || undefined,
-          timezone: timezone || undefined,
-          started_at: new Date()
-        };
+      // Upsert session record using SessionsService
+      const sessionMetadata: SessionMetadata = {
+        projectId,
+        sessionId: session_id,
+        url,
+        referrer,
+        userAgent: userAgentString,
+        ipHash: geolocation.ipHash || '',
+        country: geolocation.country,
+        browser: parsedUserAgent.browser.name,
+        os: parsedUserAgent.os.name,
+        deviceType: parsedUserAgent.device.type,
+        screenWidth: screen_width,
+        screenHeight: screen_height,
+        language,
+        timezone,
+        isPageview,
+        timestamp: new Date()
+      };
 
-        this.sessionsDal.create(sessionParams).catch(err => {
-          console.error('Failed to create session:', err);
-        });
-      } else {
-        // Update existing session
-        this.sessionsDal.update(session_id, {
-          exit_page: url,
-          pageviews: existingSession.pageviews + (isPageview ? 1 : 0),
-          events_count: existingSession.events_count + 1,
-          ended_at: new Date(),
-          is_bounce: false // More than one event = not a bounce
-        }).catch(err => {
-          console.error('Failed to update session:', err);
-        });
-      }
+      this.sessionsService.upsertSession(sessionMetadata, isNewSession);
 
       // Return minimal response for performance (< 50ms target)
       const duration = Date.now() - startTime;
