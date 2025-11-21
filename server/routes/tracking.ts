@@ -1,6 +1,12 @@
 import express, { Router } from 'express';
 import trackingController, { TrackingController } from '../controllers/tracking';
 import { apiKeyAuth } from '../middleware/apiKeyAuth';
+import {
+  combinedRateLimiter,
+  validatePayloadSize,
+  detectSuspiciousActivity,
+  validateHoneypot,
+} from '../middleware/rateLimiting';
 
 /**
  * Create tracking routes
@@ -128,6 +134,61 @@ export function createTrackingRouter(
    *                 message:
    *                   type: string
    *                   example: Invalid or inactive API key
+   *       413:
+   *         description: Payload too large (exceeds 10KB)
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: PAYLOAD_TOO_LARGE
+   *                 message:
+   *                   type: string
+   *                   example: Request payload exceeds maximum size of 10240 bytes
+   *                 maxSize:
+   *                   type: integer
+   *                   example: 10240
+   *       429:
+   *         description: Rate limit exceeded
+   *         headers:
+   *           Retry-After:
+   *             description: Number of seconds to wait before retrying
+   *             schema:
+   *               type: integer
+   *           RateLimit-Limit:
+   *             description: Request limit per window
+   *             schema:
+   *               type: integer
+   *           RateLimit-Remaining:
+   *             description: Remaining requests in current window
+   *             schema:
+   *               type: integer
+   *           RateLimit-Reset:
+   *             description: Time when the rate limit resets (Unix timestamp)
+   *             schema:
+   *               type: integer
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: RATE_LIMIT_EXCEEDED
+   *                 message:
+   *                   type: string
+   *                   example: Too many requests from this API key. Please try again later.
+   *                 retryAfter:
+   *                   type: string
+   *                   example: "3600"
+   *                 limit:
+   *                   type: integer
+   *                   example: 10000
+   *                 window:
+   *                   type: string
+   *                   example: "60 minutes"
    *       500:
    *         description: Internal server error
    *         content:
@@ -142,8 +203,14 @@ export function createTrackingRouter(
    *                   type: string
    *                   example: Failed to track event
    */
-  router.post('/event', apiKeyAuth(), (req, res) =>
-    controller.trackEvent(req, res)
+  router.post(
+    '/event',
+    validatePayloadSize(10240), // 10KB max payload
+    validateHoneypot,
+    apiKeyAuth(),
+    combinedRateLimiter,
+    detectSuspiciousActivity,
+    (req, res) => controller.trackEvent(req, res)
   );
 
   /**
@@ -234,11 +301,21 @@ export function createTrackingRouter(
    *         description: Validation error
    *       401:
    *         description: Authentication error
+   *       413:
+   *         description: Payload too large (exceeds 100KB)
+   *       429:
+   *         description: Rate limit exceeded (see /api/v1/track/event for response schema)
    *       500:
    *         description: Internal server error
    */
-  router.post('/batch', apiKeyAuth(), (req, res) =>
-    controller.trackBatch(req, res)
+  router.post(
+    '/batch',
+    validatePayloadSize(102400), // 100KB max payload for batch
+    validateHoneypot,
+    apiKeyAuth(),
+    combinedRateLimiter,
+    detectSuspiciousActivity,
+    (req, res) => controller.trackBatch(req, res)
   );
 
   return router;
