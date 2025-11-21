@@ -1,0 +1,20 @@
+Starting database deployment using @jeffrey-keyser/database-base-config...
+Running SQL migration files...
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/db-deploy - Not found
+npm error 404
+npm error 404  'db-deploy@*' is not in this registry.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: /root/.npm/_logs/2025-11-21T05_28_15_107Z-debug-0.log
+Creating session tables...
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/db-deploy - Not found
+npm error 404
+npm error 404  'db-deploy@*' is not in this registry.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: /root/.npm/_logs/2025-11-21T05_28_17_579Z-debug-0.log
+Database deployment completed successfully!

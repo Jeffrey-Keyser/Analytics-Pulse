@@ -13,3 +13,11 @@ export { Url } from './Url';
 export { Milliseconds } from './Milliseconds';
 export { Memory } from './Memory';
 export { HealthStatus } from './HealthStatus';
+
+// Analytics Value Objects
+export { ProjectId } from './ProjectId';
+export { ApiKey } from './ApiKey';
+export { EventType } from './EventType';
+export { SessionId } from './SessionId';
+export { IPHash } from './IPHash';
+export { Timestamp } from './Timestamp';
