@@ -40,6 +40,7 @@ interface AppConfig {
   CORS_ALLOWED_ORIGINS: string;
   SESSION_SECRET: string;
   JWT_SECRET: string;
+  IP_HASH_SALT: string;
   PAY_SERVICE_URL: string;
   // Optional fields - not validated as required
   PAY_SERVICE_TOKEN?: string;
@@ -100,6 +101,7 @@ function validateAndLoadConfig(): AppConfig {
     CORS_ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS || process.env.ORIGIN_BASE_URL || "http://localhost:3000",
     SESSION_SECRET: process.env.SESSION_SECRET || "",
     JWT_SECRET: process.env.JWT_SECRET || "",
+    IP_HASH_SALT: process.env.IP_HASH_SALT || "",
     PAY_SERVICE_URL:
       process.env.PAY_SERVICE_URL || "https://pay.jeffreykeyser.net",
     PAY_SERVICE_TOKEN: process.env.PAY_SERVICE_TOKEN,
@@ -113,7 +115,7 @@ function validateAndLoadConfig(): AppConfig {
       AppConfig,
       "databaseConfig" | "PAY_SERVICE_TOKEN"
     >
-  > = ["ORIGIN_BASE_URL", "CORS_ALLOWED_ORIGINS", "SESSION_SECRET", "JWT_SECRET", "PAY_SERVICE_URL"];
+  > = ["ORIGIN_BASE_URL", "CORS_ALLOWED_ORIGINS", "SESSION_SECRET", "JWT_SECRET", "IP_HASH_SALT", "PAY_SERVICE_URL"];
 
   // Validate required fields
   for (const field of requiredFields) {
@@ -131,9 +133,9 @@ function validateAndLoadConfig(): AppConfig {
   }
 
   // Validate secrets aren't placeholder values
-  if (config.SESSION_SECRET === "CHANGE_ME" || config.JWT_SECRET === "CHANGE_ME") {
+  if (config.SESSION_SECRET === "CHANGE_ME" || config.JWT_SECRET === "CHANGE_ME" || config.IP_HASH_SALT === "CHANGE_ME") {
     throw new Error(
-      `SESSION_SECRET or JWT_SECRET still set to placeholder value.\n\n` +
+      `SESSION_SECRET, JWT_SECRET, or IP_HASH_SALT still set to placeholder value.\n\n` +
       `Fix: Run ./setup-project.sh (auto-generates secrets)\n` +
       `Or:  openssl rand -base64 32`
     );
@@ -155,6 +157,13 @@ function validateAndLoadConfig(): AppConfig {
   if (nodeEnv === "production" && config.JWT_SECRET.length < 32) {
     console.warn(
       "⚠️  JWT_SECRET should be at least 32 characters long in production"
+    );
+  }
+
+  // Validate IP hash salt strength in production
+  if (nodeEnv === "production" && config.IP_HASH_SALT.length < 32) {
+    console.warn(
+      "⚠️  IP_HASH_SALT should be at least 32 characters long in production"
     );
   }
 
