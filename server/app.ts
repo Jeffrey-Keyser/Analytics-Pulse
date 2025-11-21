@@ -54,6 +54,9 @@ try {
       "/api/v1/diagnostics/detailed",
       "/v1/diagnostics", // Legacy route (will redirect)
       "/v1/diagnostics/detailed", // Legacy route (will redirect)
+      "/api/v1/track", // Event tracking endpoints (uses API key auth)
+      "/api/v1/track/event",
+      "/api/v1/track/batch",
       "/api-docs",
       "/swagger-ui",
       "/",
@@ -162,10 +165,10 @@ const serverConfig: ServerConfig = {
         description: "JWT token for dashboard/management endpoints (e.g., /api/v1/projects, /api/v1/projects/:projectId/api-keys)",
       },
       apiKeyAuth: {
-        type: "apiKey",
-        in: "header",
-        name: "X-API-Key",
-        description: "API key for tracking endpoints (format: ap_xxxxxxxxxxxxx). Generate keys via POST /api/v1/projects/:projectId/api-keys",
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "API Key",
+        description: "API key for tracking endpoints (format: ap_xxxxxxxxxxxxx). Provide as 'Authorization: Bearer ap_xxxxxxxxxxxxx' or as 'api_key' query parameter. Generate keys via POST /api/v1/projects/:projectId/api-keys",
       },
     },
     tags: [
