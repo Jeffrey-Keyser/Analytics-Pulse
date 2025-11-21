@@ -5,6 +5,7 @@ import authRouter from '../../auth';
 import diagnosticsRouter from '../../diagnostics';
 import apiKeysRouter from '../../apiKeys';
 import projectsRouter from '../../projects';
+import trackingRouter from '../../tracking';
 
 /**
  * API Version 1 Router
@@ -30,6 +31,8 @@ const v1Router = Router();
  *     description: Analytics projects management
  *   - name: API Keys
  *     description: API key management for projects
+ *   - name: Tracking
+ *     description: Event tracking and ingestion endpoints
  */
 
 // Mount authentication routes
@@ -47,6 +50,10 @@ v1Router.use('/projects', projectsRouter);
 // Mount API keys routes
 // Endpoints: /api/v1/projects/:projectId/api-keys
 v1Router.use('/projects/:projectId/api-keys', apiKeysRouter);
+
+// Mount tracking routes (public, uses API key auth)
+// Endpoints: /api/v1/track/event, /api/v1/track/batch
+v1Router.use('/track', trackingRouter);
 
 /**
  * @openapi
@@ -83,7 +90,8 @@ v1Router.get('/', (req, res) => {
       auth: '/api/v1/auth',
       diagnostics: '/api/v1/diagnostics',
       projects: '/api/v1/projects',
-      apiKeys: '/api/v1/projects/:projectId/api-keys'
+      apiKeys: '/api/v1/projects/:projectId/api-keys',
+      tracking: '/api/v1/track'
     }
   });
 });
