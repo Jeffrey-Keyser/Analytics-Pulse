@@ -1,0 +1,19 @@
+name: Deploy Terraform Configuration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-infrastructure:
+    permissions:
+      id-token: write
+      contents: read
+    uses: jeffrey-keyser/github-actions/.github/workflows/reusable-terraform-deploy.yml@v1
+    with:
+      terraform-version: '1.13.5'
+      working-directory: './terraform'
+      plan-only: false
+      auto-apply: true
+      use-oidc: true
+    secrets:
+      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}

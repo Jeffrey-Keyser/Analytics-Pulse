@@ -1,0 +1,43 @@
+# Development Dockerfile for Backend Server
+# This container runs the Express server with hot-reload support
+
+FROM node:20-alpine
+
+# Install development tools
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    bash
+
+# Set working directory
+WORKDIR /app
+
+# Accept GitHub token as build argument
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+# Create a temp directory for npm install
+WORKDIR /tmp/npm-install
+
+# Copy package files and .npmrc for installation
+COPY server/package*.json server/.npmrc ./
+
+# Install dependencies including devDependencies
+RUN npm ci
+
+# Remove .npmrc after installation for security
+RUN rm -f .npmrc
+
+# Move node_modules to /app and go back to /app
+RUN mv node_modules /app/node_modules
+WORKDIR /app
+
+# The actual source code will be mounted as a volume
+# This allows for hot-reload during development
+
+# Expose the backend port
+EXPOSE 3001
+
+# Default command (can be overridden by docker-compose)
+CMD ["npm", "run", "dev"]

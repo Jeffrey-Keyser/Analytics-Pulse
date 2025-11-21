@@ -1,0 +1,12 @@
+# .gitattributes
+# Enforce line endings for shell scripts to prevent CRLF issues on Unix systems
+
+# Shell scripts must use LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# PowerShell scripts use CRLF
+*.ps1 text eol=crlf
+
+# Default to auto line ending conversion
+* text=auto

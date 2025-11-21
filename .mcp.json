@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "mcp-context-registry": {
+      "command": "docker",
+      "args": ["run", "--rm", "-i", "-e", "MCP_TOKEN=dd30a89d8e450867aed9c5c4ebe95a786bc6634db58837a64a6e11316fe62334", "-e", "MCP_REPO_URL=https://github.com/Jeffrey-Keyser/mcp-manifests.git", "-e", "GITHUB_TOKEN=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", "mcp-context-registry", "node", "dist/src/mcp-server.js"]
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "-e",
+        "GITHUB_TOOLSETS",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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",
+        "GITHUB_TOOLSETS": "repos,issues"
+      }
+    }
+  }
+}

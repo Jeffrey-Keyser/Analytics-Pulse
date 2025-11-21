@@ -1,0 +1,102 @@
+# Docker Compose configuration for local development
+# This setup provides a complete development environment with PostgreSQL, backend, and frontend
+# Usage: docker-compose -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database Container
+  postgres:
+    image: postgres:15-alpine
+    container_name: serverless-template-postgres-dev
+    environment:
+      POSTGRES_DB: template_dev
+      POSTGRES_USER: template_user
+      POSTGRES_PASSWORD: template_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./server/db/init-docker.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U template_user -d template_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - template-network
+
+  # Backend Server Container
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.server
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: serverless-template-backend-dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      RUNNING_IN_DOCKER: "true"
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: template_dev
+      DATABASE_USER: template_user
+      DATABASE_PASSWORD: template_password
+      DATABASE_SSL: "false"
+      DATABASE_SCHEMA: public
+      ORIGIN_BASE_URL: http://localhost:3002
+      SESSION_SECRET: dev-session-secret-at-least-32-characters-long
+      JWT_SECRET: dev-jwt-secret-at-least-32-characters-long
+      PAY_SERVICE_URL: https://pay.jeffreykeyser.net
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/app
+      - ./server/package.json:/package.json:ro
+      - /app/node_modules
+      - /app/dist
+    command: npm run dev
+    networks:
+      - template-network
+    stdin_open: true
+    tty: true
+
+  # Frontend Client Container
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.client
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: serverless-template-frontend-dev
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:3001
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - /app/dist
+    command: npm run dev -- --host 0.0.0.0
+    networks:
+      - template-network
+    stdin_open: true
+    tty: true
+
+# Named volumes for data persistence
+volumes:
+  postgres-data:
+    name: serverless-template-postgres-data
+
+# Network for container communication
+networks:
+  template-network:
+    name: serverless-template-dev-network
+    driver: bridge

@@ -1,0 +1,1 @@
+aws ssm start-session --target i-08f02f60ca2bbee36 --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "host=db.jeffreykeyser.net,portNumber=5432,localPortNumber=5432"

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@jeffrey-keyser/github-actions": "^1.1.0",
+    "pg": "^8.16.3"
+  }
+}

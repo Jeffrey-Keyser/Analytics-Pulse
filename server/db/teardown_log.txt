@@ -1,0 +1,3 @@
+Running teardown: ./teardown/exec.sql
+Running: psql -h tinder-rds-cluster.cluster-csyjmwp4sepq.us-east-1.rds.amazonaws.com -U username -d life -p 5432 -f ./teardown/exec.sql
+Teardown executed successfully!

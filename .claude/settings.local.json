@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(ls)",
+      "Bash(rm:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node test-auth.js)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm test)",
+      "Bash(NODE_ENV=test npm test)",
+      "Bash(npm test:*)",
+      "Bash(./node_modules/.bin/jest:*)",
+      "Bash(npx sequelize-cli migration:generate:*)",
+      "Bash(rm:*)",
+      "Bash(chmod:*)",
+      "Bash(mv:*)",
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(npm config:*)",
+      "Bash(npm run lint)",
+      "Bash(ls:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx ts-node:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__mcp-context-registry__get_manifest",
+      "Bash(cp:*)",
+      "Bash(timeout 10s npm run dev)",
+      "mcp__mcp-context-registry__search_applications",
+      "mcp__mcp-context-registry__save_manifest",
+      "Bash(timeout 30s npm test)",
+      "Bash(timeout 15s npx vitest run src/components/auth/__tests__/)"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "mcp-context-registry",
+    "github",
+    "sequential-thinking"
+  ]
+}

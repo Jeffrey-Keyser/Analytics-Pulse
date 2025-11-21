@@ -1,0 +1,171 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Run frontend tests on pull requests
+  test-frontend:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout GitHub Actions Repository
+        uses: actions/checkout@v4
+        with:
+          repository: jeffrey-keyser/github-actions
+          token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          path: .github/private-actions
+
+      - name: Checkout Main Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Setup Node.js and Test (Frontend)
+        uses: ./.github/private-actions/composite-actions/node-build
+        env:
+          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+        with:
+          node-version: '20'
+          working-directory: main/client
+          install-command: 'npm ci'
+          cache-disabled: false
+          issue_on_failure: "true"
+
+  # Run backend tests on pull requests
+  test-backend:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout GitHub Actions Repository
+        uses: actions/checkout@v4
+        with:
+          repository: jeffrey-keyser/github-actions
+          token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          path: .github/private-actions
+
+      - name: Checkout Main Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Setup Node.js and Test (Backend)
+        uses: ./.github/private-actions/composite-actions/node-build
+        env:
+          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          PAY_SERVICE_TOKEN: ${{ secrets.PAY_SERVICE_TOKEN }}
+        with:
+          node-version: '20'
+          working-directory: main/server
+          install-command: 'npm ci'
+          cache-disabled: false
+          issue_on_failure: "true"
+
+  # Frontend deployment
+  deploy-frontend:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout GitHub Actions Repository
+        uses: actions/checkout@v4
+        with:
+          repository: jeffrey-keyser/github-actions
+          token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          path: .github/private-actions
+
+      - name: Checkout Main Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Setup Node.js (Frontend)
+        uses: ./.github/private-actions/composite-actions/node-build
+        env:
+          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          VITE_API_URL: ${{ vars.API_BASE_URL }}
+          VITE_PAY_URL: ${{ vars.API_BASE_URL }}
+        with:
+          node-version: '20'
+          working-directory: main/client
+          install-command: 'npm ci'
+          build-command: 'npm run build'
+          cache-disabled: false
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: GitHubActions-${{ github.job }}-${{ github.run_id }}
+
+      - name: Deploy to S3
+        uses: ./.github/private-actions/composite-actions/s3-deploy
+        with:
+          s3-bucket: ${{ vars.AWS_S3_BUCKET_NAME }}
+          build-directory: main/client/dist  # Path to build output
+          cloudfront-distribution-id: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+          cloudfront-paths: "/*" 
+
+  # Backend deployment
+  deploy-backend:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout GitHub Actions Repository
+        uses: actions/checkout@v4
+        with:
+          repository: jeffrey-keyser/github-actions
+          token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          path: .github/private-actions
+
+      - name: Checkout Main Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Setup Node.js (Backend)
+        uses: ./.github/private-actions/composite-actions/node-build
+        env:
+          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
+          PAY_SERVICE_TOKEN: ${{ secrets.PAY_SERVICE_TOKEN }}
+        with:
+          node-version: '20'
+          working-directory: main/server
+          install-command: 'npm ci'
+          cache-disabled: false
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: GitHubActions-${{ github.job }}-${{ github.run_id }}
+
+      - name: Build and Deploy to ECR/Lambda
+        uses: ./.github/private-actions/composite-actions/ecr-lambda-deploy
+        with:
+          dockerfile-path: main/Dockerfile_Server
+          docker-context: main
+          ecr-repository: ${{ vars.AWS_ECR_URL }}
+          lambda-function-name: ${{ vars.AWS_LAMBDA_FUNCTION_NAME }}

@@ -1,0 +1,68 @@
+# Core Configuration
+service_name = "jeffrey-keyser-serverlesswebtemplate"
+domain_name  = "example.com"  # TODO: Update with your actual domain
+region       = "us-east-1"
+environment  = "prod"
+
+# Domain Configuration
+alternative_domain_names = ["www.example.com"]  # TODO: Update with your www subdomain
+create_route53_zone     = true
+register_domain         = false
+
+# Lambda Configuration
+lambda_memory_size = 256
+lambda_timeout     = 10
+
+# Container Configuration
+container_image_tag = "latest"
+ecr_force_delete    = true
+
+# Storage Configuration
+s3_force_destroy      = true
+s3_versioning_enabled = false
+
+# CDN Configuration
+cloudfront_price_class             = "PriceClass_100"
+cloudfront_geo_restriction_type    = "whitelist"
+cloudfront_geo_restriction_locations = ["US"]
+
+# Security Features
+enable_waf                = false
+enable_custom_error_pages = true
+
+# Monitoring
+log_retention_days         = 7
+enable_api_gateway_logging = false
+
+# GitHub Integration
+github_owner      = "yourorg"  # TODO: Update with your GitHub org/username
+github_repository = "ServerlessWebTemplate"
+enable_github_oidc = true
+
+# Sensitive Credentials (REQUIRED - DO NOT commit these values)
+# GitHub token for Terraform provider (managing GitHub resources)
+github_token = "ghp_your_github_token_here"  # TODO: Replace with your GitHub PAT
+
+# GitHub Personal Access Token for Actions (accessing private actions)
+github_personal_access_token = "ghp_your_personal_access_token_here"  # TODO: Replace with your PAT
+
+# JWT Secret for authentication
+jwt_secret = "your-secure-jwt-secret-here"  # TODO: Generate a secure random string
+
+# AWS Credentials (ONLY required if enable_github_oidc = false)
+# When OIDC is enabled (recommended), these are not needed
+# aws_access_key_id     = "AKIA..."  # TODO: Your AWS Access Key ID (if OIDC disabled)
+# aws_secret_access_key = "..."      # TODO: Your AWS Secret Access Key (if OIDC disabled)
+
+# CORS Configuration - Configure for your specific domain
+# Note: Only the first origin is used due to CORS specification limitations
+cors_allowed_origins   = ["https://example.com"]  # TODO: Update with your primary domain
+cors_allow_credentials = true
+cors_allowed_methods   = "GET,POST,PUT,DELETE,OPTIONS"
+cors_allowed_headers   = "Content-Type,Authorization,X-Requested-With"
+
+# Additional Tags
+additional_tags = {
+  Owner   = "YourName"  # TODO: Update with your name
+  Project = "ServerlessWebTemplate"
+}

@@ -1,0 +1,27 @@
+FROM public.ecr.aws/lambda/nodejs:20
+
+WORKDIR /var/task
+
+# Accept GitHub token as build argument for private npm packages
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+# Copy package files and .npmrc first to leverage Docker layer caching
+COPY server/package*.json server/.npmrc ./
+
+# Install dependencies (npm ci for reproducible builds)
+RUN npm ci --omit=dev
+
+# Remove .npmrc after installation for security
+RUN rm -f .npmrc
+
+# Copy the rest of the application
+COPY server/ ./
+
+# Build the application
+RUN npm run build
+
+EXPOSE 80
+EXPOSE 3005
+
+CMD ["dist/lambda.handler"]
