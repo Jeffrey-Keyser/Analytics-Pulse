@@ -25,6 +25,9 @@ declare module 'express-serve-static-core' {
       role?: string;
       [key: string]: string | number | boolean | undefined;
     };
+    // API key authentication properties
+    apiKeyProjectId?: string;
+    apiKeyId?: string;
   }
 }
 
