@@ -3,6 +3,8 @@ import { Router } from 'express';
 // Import existing route modules
 import authRouter from '../../auth';
 import diagnosticsRouter from '../../diagnostics';
+import apiKeysRouter from '../../apiKeys';
+import projectsRouter from '../../projects';
 
 /**
  * API Version 1 Router
@@ -13,6 +15,7 @@ import diagnosticsRouter from '../../diagnostics';
  * Route structure:
  * - /api/v1/auth/* - Authentication and user profile routes
  * - /api/v1/diagnostics/* - System diagnostics and health checks
+ * - /api/v1/projects/* - Projects CRUD operations
  */
 const v1Router = Router();
 
@@ -23,6 +26,10 @@ const v1Router = Router();
  *     description: User authentication and profile management
  *   - name: Diagnostics
  *     description: System diagnostics and health monitoring
+ *   - name: Projects
+ *     description: Analytics projects management
+ *   - name: API Keys
+ *     description: API key management for projects
  */
 
 // Mount authentication routes
@@ -32,6 +39,14 @@ v1Router.use('/auth', authRouter);
 // Mount diagnostics routes
 // Endpoints: /api/v1/diagnostics/detailed
 v1Router.use('/diagnostics', diagnosticsRouter);
+
+// Mount projects routes
+// Endpoints: /api/v1/projects, /api/v1/projects/:id
+v1Router.use('/projects', projectsRouter);
+
+// Mount API keys routes
+// Endpoints: /api/v1/projects/:projectId/api-keys
+v1Router.use('/projects/:projectId/api-keys', apiKeysRouter);
 
 /**
  * @openapi
@@ -66,7 +81,9 @@ v1Router.get('/', (req, res) => {
     documentation: '/api-docs',
     endpoints: {
       auth: '/api/v1/auth',
-      diagnostics: '/api/v1/diagnostics'
+      diagnostics: '/api/v1/diagnostics',
+      projects: '/api/v1/projects',
+      apiKeys: '/api/v1/projects/:projectId/api-keys'
     }
   });
 });

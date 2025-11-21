@@ -17,7 +17,7 @@ import config from "./config/env";
 // Log important configuration for debugging
 const packageInfo = require("../package.json");
 console.log("=== SERVER CONFIGURATION ===");
-console.log("SERVICE:", "ServerlessWebTemplate");
+console.log("SERVICE:", "Analytics-Pulse");
 console.log("VERSION:", packageInfo.version);
 console.log("NODE_ENV:", config.NODE_ENV);
 console.log("PORT:", config.PORT);
@@ -140,7 +140,7 @@ const serverConfig: ServerConfig = {
   healthCheck: {
     enabled: true,
     path: "/health",
-    serviceName: "Myrrs API",
+    serviceName: "Analytics-Pulse API",
     version: "1.0.0",
     checks: {
       database: databaseHealthCheck,
@@ -149,18 +149,47 @@ const serverConfig: ServerConfig = {
 
   swagger: {
     enabled: config.NODE_ENV !== "test",
-    title: "ServerlessWebTemplate API",
+    title: "Analytics-Pulse API",
     version: "1.0.0",
     description:
-      "API documentation for the ServerlessWebTemplate backend services.",
+      "Privacy-focused analytics platform API. Provides endpoints for managing analytics projects, API keys, event tracking, and analytics data retrieval. Dashboard endpoints use Bearer token authentication, while tracking endpoints use API key authentication.",
     apiPaths: ["./routes/**/*.ts", "./app.ts"],
     securitySchemes: {
       bearerAuth: {
         type: "http",
         scheme: "bearer",
         bearerFormat: "JWT",
+        description: "JWT token for dashboard/management endpoints (e.g., /api/v1/projects, /api/v1/projects/:projectId/api-keys)",
+      },
+      apiKeyAuth: {
+        type: "apiKey",
+        in: "header",
+        name: "X-API-Key",
+        description: "API key for tracking endpoints (format: ap_xxxxxxxxxxxxx). Generate keys via POST /api/v1/projects/:projectId/api-keys",
       },
     },
+    tags: [
+      {
+        name: "Projects",
+        description: "Analytics project management endpoints (requires Bearer token)",
+      },
+      {
+        name: "API Keys",
+        description: "API key generation and management for projects (requires Bearer token)",
+      },
+      {
+        name: "Tracking",
+        description: "Event tracking endpoints (requires API key)",
+      },
+      {
+        name: "Analytics",
+        description: "Analytics data retrieval and reporting (requires Bearer token)",
+      },
+      {
+        name: "Diagnostics",
+        description: "System health and diagnostic endpoints",
+      },
+    ],
     servers: [
       {
         url: `http://localhost:${config.PORT}`,

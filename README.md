@@ -1,7 +1,8 @@
-# ServerlessWebTemplate
+# Analytics-Pulse
 
-A template repository for creating standardized serverless web applications with built-in Pay authentication integration.
-This project utilizes Terraform for infrastructure management and includes pre-configured authentication using the Pay service integration package.
+A privacy-focused analytics platform built with serverless architecture. Track and analyze user behavior across your websites without compromising user privacy.
+
+Built on the ServerlessWebTemplate foundation, this project utilizes Terraform for infrastructure management and includes pre-configured authentication using the Pay service integration package.
 
 ## ✨ Enhanced Features
 
@@ -286,12 +287,55 @@ export DATABASE_SCHEMA="custom"       # Default: public
 The API documentation is automatically generated from JSDoc comments in the route files (`server/routes/*.ts`) and is served by Swagger UI.
 
 - **Swagger UI Endpoint**: `/api-docs`
+- **Local Development**: `http://localhost:3001/api-docs`
 
-When the server is running locally (e.g., `cd server && npm run dev`), you can access the interactive API documentation at `http://localhost:<PORT>/api-docs` (e.g., `http://localhost:3001/api-docs`).
+### API Overview
 
-**TODO:** Configure the production server URL route in `server/config/swaggerConfig.ts` to match your deployed API endpoint.
+Analytics-Pulse provides two types of API authentication:
 
-This documentation provides details on all available API endpoints, including request parameters, request bodies, and response schemas. It also allows for direct testing of the endpoints from the browser.
+1. **Bearer Token Authentication** (Dashboard/Management APIs):
+   - Projects management (`/api/v1/projects`)
+   - API keys management (`/api/v1/projects/:projectId/api-keys`)
+   - Analytics data retrieval
+
+2. **API Key Authentication** (Tracking APIs):
+   - Event tracking endpoints (coming in Phase 2)
+   - Use API keys generated via the management endpoints
+
+### Available Endpoints
+
+#### Projects API (`/api/v1/projects`)
+Manage analytics projects for your websites and applications.
+
+- `GET /api/v1/projects` - List all projects (with pagination and filtering)
+- `POST /api/v1/projects` - Create a new project
+- `GET /api/v1/projects/:id` - Get project details
+- `PUT /api/v1/projects/:id` - Update project settings
+- `DELETE /api/v1/projects/:id` - Delete project (cascades to all events)
+
+**Authentication**: Bearer token required
+
+#### API Keys API (`/api/v1/projects/:projectId/api-keys`)
+Generate and manage API keys for event tracking.
+
+- `GET /api/v1/projects/:projectId/api-keys` - List all API keys for a project
+- `POST /api/v1/projects/:projectId/api-keys` - Generate new API key (full key shown only once!)
+- `DELETE /api/v1/projects/:projectId/api-keys/:keyId` - Revoke an API key
+
+**Authentication**: Bearer token required
+
+**Security Note**: Full API keys are only shown once upon creation. Save them securely!
+
+### Interactive Documentation
+
+When the server is running, visit `/api-docs` for:
+- Complete endpoint specifications
+- Request/response schemas
+- Interactive API testing
+- Authentication requirements
+- Example requests and responses
+
+The interactive documentation allows direct testing of endpoints from your browser with proper authentication.
 
 ## Authentication Setup
 
