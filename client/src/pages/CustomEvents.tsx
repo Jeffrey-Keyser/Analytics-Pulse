@@ -1,11 +1,14 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Container } from '@jeffrey-keyser/personal-ui-kit';
+import { Container, Toast } from '@jeffrey-keyser/personal-ui-kit';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetProjectEventsQuery, useGetProjectEventsAggregateQuery } from '../reducers/events.api';
+import { useGetProjectEventsQuery, useGetProjectEventsAggregateQuery, useExportEventsMutation } from '../reducers/events.api';
 import { EventsTable } from '../components/events/EventsTable';
 import { EventFilters } from '../components/events/EventFilters';
 import { EventSummary } from '../components/events/EventSummary';
+import { ExportButton } from '../components/analytics/ExportButton';
 import { format, subDays } from 'date-fns';
+import { ExportFormat } from '../models/export';
+import { handleExportDownload } from '../utils/download';
 
 /**
  * Custom Events Page
@@ -27,6 +30,14 @@ export function CustomEvents() {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 50;
+
+  // Toast notification state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+
+  // Export mutation
+  const [exportEvents, { isLoading: isExporting }] = useExportEventsMutation();
 
   // Calculate offset
   const offset = (currentPage - 1) * eventsPerPage;
@@ -92,6 +103,32 @@ export function CustomEvents() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Handle export
+  const handleExport = async (format: ExportFormat) => {
+    try {
+      const blob = await exportEvents({
+        projectId: id!,
+        format,
+        event_name: filters.eventName || undefined,
+        start_date: filters.startDate || undefined,
+        end_date: filters.endDate || undefined,
+        limit: eventsPerPage,
+        offset,
+      }).unwrap();
+
+      handleExportDownload(blob, 'events', format, filters.startDate, filters.endDate);
+
+      setToastMessage(`Events data exported successfully as ${format.toUpperCase()}`);
+      setToastType('success');
+      setShowToast(true);
+    } catch (error) {
+      console.error('Export failed:', error);
+      setToastMessage('Failed to export events data. Please try again.');
+      setToastType('error');
+      setShowToast(true);
+    }
+  };
+
   // Error state
   if (eventsError) {
     return (
@@ -114,9 +151,20 @@ export function CustomEvents() {
       <div style={styles.pageContainer}>
         <div style={styles.header}>
           <h1 style={styles.title}>Custom Events</h1>
-          <button onClick={() => navigate(`/projects/${id}`)} style={styles.backButton}>
-            Back to Project
-          </button>
+          <div style={styles.headerActions}>
+            <ExportButton
+              projectId={id!}
+              startDate={filters.startDate}
+              endDate={filters.endDate}
+              dataType="events"
+              onExport={handleExport}
+              disabled={eventsLoading || !!eventsError}
+              loading={isExporting}
+            />
+            <button onClick={() => navigate(`/projects/${id}`)} style={styles.backButton}>
+              Back to Project
+            </button>
+          </div>
         </div>
 
         <EventSummary
@@ -142,6 +190,16 @@ export function CustomEvents() {
           onPageChange={handlePageChange}
           loading={eventsLoading}
         />
+
+        {/* Toast Notification */}
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            type={toastType}
+            onClose={() => setShowToast(false)}
+            duration={4000}
+          />
+        )}
       </div>
     </Container>
   );
@@ -156,6 +214,14 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '2rem',
+    flexWrap: 'wrap',
+    gap: '1rem',
+  },
+  headerActions: {
+    display: 'flex',
+    gap: '0.5rem',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
   title: {
     margin: 0,
