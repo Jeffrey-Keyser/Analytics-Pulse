@@ -14,6 +14,7 @@ import exportRouter from '../../export';
 import goalsRouter from '../../goals';
 import partitionsRouter from '../../partitions';
 import performanceRouter from '../../performance';
+import emailPreferencesRouter, { unsubscribeRouter } from '../../emailPreferences';
 
 /**
  * API Version 1 Router
@@ -57,6 +58,8 @@ const v1Router = Router();
  *     description: Database partition management and monitoring endpoints
  *   - name: Performance
  *     description: System performance monitoring and metrics endpoints
+ *   - name: Email Reporting
+ *     description: Email reporting preferences and scheduled report management
  */
 
 // Mount authentication routes
@@ -111,6 +114,14 @@ v1Router.use('/partitions', partitionsRouter);
 // Endpoints: /api/v1/performance, /api/v1/performance/queries, /api/v1/performance/cache, /api/v1/performance/database
 v1Router.use('/performance', performanceRouter);
 
+// Mount email preferences routes
+// Endpoints: /api/v1/projects/:projectId/email-preferences, /api/v1/projects/:projectId/email-preferences/reports, /api/v1/projects/:projectId/email-preferences/test
+v1Router.use('/projects/:projectId/email-preferences', emailPreferencesRouter);
+
+// Mount unsubscribe route (public, no auth required)
+// Endpoints: /api/v1/unsubscribe
+v1Router.use('/unsubscribe', unsubscribeRouter);
+
 /**
  * @openapi
  * /api/v1:
@@ -160,7 +171,9 @@ v1Router.get('/', (req, res) => {
         analytics: '/api/v1/projects/:id/analytics/export',
         events: '/api/v1/projects/:id/events/export',
         campaigns: '/api/v1/projects/:id/campaigns/export'
-      }
+      },
+      emailPreferences: '/api/v1/projects/:id/email-preferences',
+      unsubscribe: '/api/v1/unsubscribe'
     }
   });
 });

@@ -14,6 +14,7 @@
     "setup-auth": "node ./scripts/setup-auth.js"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.936.0",
     "@jeffrey-keyser/api-errors": "^1.0.2",
     "@jeffrey-keyser/database-base-config": "^1.1.0",
     "@jeffrey-keyser/express-middleware-suite": "^1.2.0",
