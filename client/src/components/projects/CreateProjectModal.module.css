@@ -115,30 +115,72 @@
   border-top: 1px solid var(--border-color, #e5e7eb);
 }
 
-/* Dark mode support */
+/* Dark mode support - data-theme attribute */
+:root[data-theme='dark'] .modalContent,
+:root.dark-theme .modalContent {
+  background: var(--color-background-elevated);
+}
+
+:root[data-theme='dark'] .modalHeader,
+:root.dark-theme .modalHeader {
+  border-bottom-color: var(--color-border-primary);
+}
+
+:root[data-theme='dark'] .closeButton:hover,
+:root.dark-theme .closeButton:hover {
+  color: var(--color-text-primary);
+}
+
+:root[data-theme='dark'] .input,
+:root[data-theme='dark'] .textarea,
+:root.dark-theme .input,
+:root.dark-theme .textarea {
+  background-color: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+:root[data-theme='dark'] .input:disabled,
+:root[data-theme='dark'] .textarea:disabled,
+:root.dark-theme .input:disabled,
+:root.dark-theme .textarea:disabled {
+  background-color: var(--color-background-tertiary);
+}
+
+:root[data-theme='dark'] .errorMessage,
+:root.dark-theme .errorMessage {
+  background-color: #7f1d1d;
+}
+
+:root[data-theme='dark'] .modalActions,
+:root.dark-theme .modalActions {
+  border-top-color: var(--color-border-primary);
+}
+
+/* Dark mode support - prefers-color-scheme fallback */
 @media (prefers-color-scheme: dark) {
   .modalContent {
-    background: var(--surface-color, #1f2937);
+    background: var(--color-background-elevated, #1f2937);
   }
 
   .modalHeader {
-    border-bottom-color: var(--border-color, #374151);
+    border-bottom-color: var(--color-border-primary, #374151);
   }
 
   .closeButton:hover {
-    color: var(--text-primary, #f9fafb);
+    color: var(--color-text-primary, #f9fafb);
   }
 
   .input,
   .textarea {
-    background-color: var(--surface-secondary, #111827);
-    border-color: var(--border-color, #374151);
-    color: var(--text-primary, #f9fafb);
+    background-color: var(--color-background-secondary, #111827);
+    border-color: var(--color-border-primary, #374151);
+    color: var(--color-text-primary, #f9fafb);
   }
 
   .input:disabled,
   .textarea:disabled {
-    background-color: var(--surface-secondary, #0f1419);
+    background-color: var(--color-background-tertiary, #0f1419);
   }
 
   .errorMessage {
@@ -146,6 +188,6 @@
   }
 
   .modalActions {
-    border-top-color: var(--border-color, #374151);
+    border-top-color: var(--color-border-primary, #374151);
   }
 }

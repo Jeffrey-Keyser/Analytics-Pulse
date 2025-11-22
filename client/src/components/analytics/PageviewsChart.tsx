@@ -1,6 +1,7 @@
 import React from 'react';
 import { TimeSeriesDataPoint } from '../../models/analytics';
 import { format, parseISO } from 'date-fns';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 // NOTE: This component requires recharts to be installed
 // Run: npm install recharts
@@ -13,11 +14,102 @@ export interface PageviewsChartProps {
 }
 
 export function PageviewsChart({ data, loading = false }: PageviewsChartProps) {
+  const colors = useThemeColors();
   // Format the data for the chart
   const formattedData = data.map((point) => ({
     ...point,
     date: format(parseISO(point.date), 'MMM dd'),
   }));
+
+  const styles = {
+    container: {
+      backgroundColor: colors.background.secondary,
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '8px',
+      padding: '1.5rem',
+      marginBottom: '2rem',
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between' as const,
+      alignItems: 'center' as const,
+      marginBottom: '1rem',
+      flexWrap: 'wrap' as const,
+      gap: '1rem',
+    },
+    title: {
+      margin: 0,
+      fontSize: '1.25rem',
+      fontWeight: 600,
+      color: colors.text.primary,
+    },
+    legend: {
+      display: 'flex',
+      gap: '1rem',
+      flexWrap: 'wrap' as const,
+    },
+    legendItem: {
+      display: 'flex',
+      alignItems: 'center' as const,
+      gap: '0.5rem',
+      fontSize: '0.875rem',
+      color: colors.text.primary,
+    },
+    legendDot: {
+      width: '12px',
+      height: '12px',
+      borderRadius: '50%',
+    },
+    loadingContainer: {
+      height: '400px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    },
+    skeleton: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+    },
+    placeholder: {
+      height: '400px',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      backgroundColor: colors.background.tertiary,
+      borderRadius: '4px',
+      border: `2px dashed ${colors.border.primary}`,
+    },
+    placeholderText: {
+      margin: '0.5rem 0',
+      fontSize: '1rem',
+      color: colors.text.secondary,
+    },
+    code: {
+      backgroundColor: colors.border.primary,
+      padding: '0.25rem 0.5rem',
+      borderRadius: '4px',
+      fontFamily: 'monospace',
+    },
+    dataPreview: {
+      marginTop: '2rem',
+      padding: '1rem',
+      backgroundColor: colors.background.secondary,
+      borderRadius: '4px',
+      maxWidth: '600px',
+      textAlign: 'left' as const,
+    },
+    pre: {
+      backgroundColor: colors.background.tertiary,
+      padding: '1rem',
+      borderRadius: '4px',
+      overflow: 'auto' as const,
+      fontSize: '0.875rem',
+      color: colors.text.primary,
+    },
+  };
 
   if (loading) {
     return (
@@ -38,15 +130,15 @@ export function PageviewsChart({ data, loading = false }: PageviewsChartProps) {
         <h3 style={styles.title}>Pageviews Over Time</h3>
         <div style={styles.legend}>
           <div style={styles.legendItem}>
-            <span style={{ ...styles.legendDot, backgroundColor: '#8884d8' }}></span>
+            <span style={{ ...styles.legendDot, backgroundColor: colors.charts.line1 }}></span>
             <span>Pageviews</span>
           </div>
           <div style={styles.legendItem}>
-            <span style={{ ...styles.legendDot, backgroundColor: '#82ca9d' }}></span>
+            <span style={{ ...styles.legendDot, backgroundColor: colors.charts.line2 }}></span>
             <span>Unique Visitors</span>
           </div>
           <div style={styles.legendItem}>
-            <span style={{ ...styles.legendDot, backgroundColor: '#ffc658' }}></span>
+            <span style={{ ...styles.legendDot, backgroundColor: colors.charts.line3 }}></span>
             <span>Sessions</span>
           </div>
         </div>
@@ -84,93 +176,5 @@ export function PageviewsChart({ data, loading = false }: PageviewsChartProps) {
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    marginBottom: '2rem',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem',
-    flexWrap: 'wrap',
-    gap: '1rem',
-  },
-  title: {
-    margin: 0,
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#333',
-  },
-  legend: {
-    display: 'flex',
-    gap: '1rem',
-    flexWrap: 'wrap',
-  },
-  legendItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.875rem',
-  },
-  legendDot: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-  },
-  loadingContainer: {
-    height: '400px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-  },
-  placeholder: {
-    height: '400px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '4px',
-    border: '2px dashed #ccc',
-  },
-  placeholderText: {
-    margin: '0.5rem 0',
-    fontSize: '1rem',
-    color: '#666',
-  },
-  code: {
-    backgroundColor: '#e0e0e0',
-    padding: '0.25rem 0.5rem',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-  },
-  dataPreview: {
-    marginTop: '2rem',
-    padding: '1rem',
-    backgroundColor: 'white',
-    borderRadius: '4px',
-    maxWidth: '600px',
-    textAlign: 'left',
-  },
-  pre: {
-    backgroundColor: '#f5f5f5',
-    padding: '1rem',
-    borderRadius: '4px',
-    overflow: 'auto',
-    fontSize: '0.875rem',
-  },
-};
 
 export default PageviewsChart;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { OverviewStats } from '../../models/analytics';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 export interface SummaryCardsProps {
   stats: OverviewStats;
@@ -14,6 +15,48 @@ interface MetricCardProps {
 }
 
 function MetricCard({ title, value, icon, loading }: MetricCardProps) {
+  const colors = useThemeColors();
+
+  const styles = {
+    card: {
+      backgroundColor: colors.background.secondary,
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '8px',
+      padding: '1.5rem',
+      boxShadow: colors.shadows.sm,
+      transition: 'box-shadow 0.2s',
+    },
+    cardHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '0.75rem',
+    },
+    icon: {
+      fontSize: '1.25rem',
+    },
+    cardTitle: {
+      margin: 0,
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: colors.text.secondary,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.5px',
+    },
+    cardValue: {
+      fontSize: '1.875rem',
+      fontWeight: 700,
+      color: colors.text.primary,
+      lineHeight: 1.2,
+    },
+    skeleton: {
+      height: '2rem',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+      animation: 'pulse 1.5s infinite',
+    },
+  };
+
   return (
     <div style={styles.card}>
       <div style={styles.cardHeader}>
@@ -48,7 +91,7 @@ export function SummaryCards({ stats, loading = false }: SummaryCardsProps) {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={containerStyle}>
       <MetricCard
         title="Total Pageviews"
         value={formatNumber(stats.pageviews)}
@@ -83,50 +126,11 @@ export function SummaryCards({ stats, loading = false }: SummaryCardsProps) {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1rem',
-    marginBottom: '2rem',
-  },
-  card: {
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-    transition: 'box-shadow 0.2s',
-  },
-  cardHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '0.75rem',
-  },
-  icon: {
-    fontSize: '1.25rem',
-  },
-  cardTitle: {
-    margin: 0,
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    color: '#666',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  },
-  cardValue: {
-    fontSize: '1.875rem',
-    fontWeight: 700,
-    color: '#333',
-    lineHeight: 1.2,
-  },
-  skeleton: {
-    height: '2rem',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-    animation: 'pulse 1.5s infinite',
-  },
+const containerStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+  gap: '1rem',
+  marginBottom: '2rem',
 };
 
 export default SummaryCards;

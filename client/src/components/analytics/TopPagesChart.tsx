@@ -1,5 +1,6 @@
 import React from 'react';
 import { TopPage } from '../../models/analytics';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 // NOTE: This component requires recharts to be installed
 // Run: npm install recharts
@@ -12,6 +13,8 @@ export interface TopPagesChartProps {
 }
 
 export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
+  const colors = useThemeColors();
+
   // Shorten URLs for better display
   const formatUrl = (url: string): string => {
     if (url.length > 40) {
@@ -26,7 +29,105 @@ export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
     shortUrl: formatUrl(page.url),
   }));
 
-  const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1', '#d084d8', '#ffb347', '#a8e6cf'];
+  const chartColors = [
+    colors.charts.bar1,
+    colors.charts.bar2,
+    colors.charts.bar3,
+    colors.charts.bar4,
+    colors.charts.bar5,
+    colors.charts.line1,
+    colors.charts.line2,
+    colors.charts.line3,
+  ];
+
+  const styles = {
+    container: {
+      backgroundColor: colors.background.secondary,
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '8px',
+      padding: '1.5rem',
+      marginBottom: '2rem',
+    },
+    header: {
+      marginBottom: '1rem',
+    },
+    title: {
+      margin: 0,
+      fontSize: '1.25rem',
+      fontWeight: 600,
+      color: colors.text.primary,
+    },
+    subtitle: {
+      fontSize: '0.875rem',
+      color: colors.text.secondary,
+      marginTop: '0.25rem',
+    },
+    loadingContainer: {
+      height: '400px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    },
+    skeleton: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+    },
+    tableContainer: {
+      overflowX: 'auto' as const,
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse' as const,
+    },
+    tableHeaderRow: {
+      borderBottom: `2px solid ${colors.border.primary}`,
+    },
+    tableHeader: {
+      textAlign: 'left' as const,
+      padding: '0.75rem',
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      color: colors.text.secondary,
+      textTransform: 'uppercase' as const,
+    },
+    tableRow: {
+      borderBottom: `1px solid ${colors.border.primary}`,
+    },
+    tableCell: {
+      padding: '0.75rem',
+      fontSize: '0.875rem',
+      color: colors.text.primary,
+    },
+    urlCell: {
+      display: 'flex',
+      alignItems: 'center' as const,
+      gap: '0.5rem',
+      maxWidth: '400px',
+      overflow: 'hidden' as const,
+      textOverflow: 'ellipsis' as const,
+      whiteSpace: 'nowrap' as const,
+    },
+    colorIndicator: {
+      width: '12px',
+      height: '12px',
+      borderRadius: '2px',
+      flexShrink: 0,
+    },
+    note: {
+      marginTop: '1rem',
+      fontSize: '0.875rem',
+      color: colors.text.secondary,
+      fontStyle: 'italic' as const,
+    },
+    code: {
+      backgroundColor: colors.border.primary,
+      padding: '0.25rem 0.5rem',
+      borderRadius: '4px',
+      fontFamily: 'monospace',
+    },
+  };
 
   if (loading) {
     return (
@@ -50,19 +151,26 @@ export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
       {/* UNCOMMENT AFTER INSTALLING RECHARTS:
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={formattedData} layout="vertical">
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" />
-          <YAxis type="category" dataKey="shortUrl" width={150} />
+          <CartesianGrid strokeDasharray="3 3" stroke={colors.charts.grid} />
+          <XAxis type="number" stroke={colors.charts.axis} />
+          <YAxis type="category" dataKey="shortUrl" width={150} stroke={colors.charts.axis} />
           <Tooltip
+            contentStyle={{
+              backgroundColor: colors.charts.tooltip.background,
+              border: `1px solid ${colors.charts.tooltip.border}`,
+              borderRadius: '4px',
+              color: colors.charts.tooltip.text,
+            }}
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
                   <div style={{
-                    backgroundColor: 'white',
+                    backgroundColor: colors.charts.tooltip.background,
                     padding: '10px',
-                    border: '1px solid #ccc',
+                    border: `1px solid ${colors.charts.tooltip.border}`,
                     borderRadius: '4px',
+                    color: colors.charts.tooltip.text,
                   }}>
                     <p style={{ margin: 0, fontSize: '0.875rem', wordBreak: 'break-all' }}>
                       <strong>{data.url}</strong>
@@ -79,9 +187,9 @@ export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
               return null;
             }}
           />
-          <Bar dataKey="pageviews" fill="#8884d8">
+          <Bar dataKey="pageviews" fill={colors.charts.bar1}>
             {formattedData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+              <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
             ))}
           </Bar>
         </BarChart>
@@ -103,7 +211,7 @@ export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
               <tr key={index} style={styles.tableRow}>
                 <td style={styles.tableCell}>
                   <div style={styles.urlCell}>
-                    <span style={{ ...styles.colorIndicator, backgroundColor: colors[index % colors.length] }}></span>
+                    <span style={{ ...styles.colorIndicator, backgroundColor: chartColors[index % chartColors.length] }}></span>
                     <span title={page.url}>{page.url}</span>
                   </div>
                 </td>
@@ -120,93 +228,5 @@ export function TopPagesChart({ data, loading = false }: TopPagesChartProps) {
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    marginBottom: '2rem',
-  },
-  header: {
-    marginBottom: '1rem',
-  },
-  title: {
-    margin: 0,
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: '0.875rem',
-    color: '#666',
-    marginTop: '0.25rem',
-  },
-  loadingContainer: {
-    height: '400px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-  },
-  tableContainer: {
-    overflowX: 'auto',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  tableHeaderRow: {
-    borderBottom: '2px solid #e0e0e0',
-  },
-  tableHeader: {
-    textAlign: 'left',
-    padding: '0.75rem',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    color: '#666',
-    textTransform: 'uppercase',
-  },
-  tableRow: {
-    borderBottom: '1px solid #e0e0e0',
-  },
-  tableCell: {
-    padding: '0.75rem',
-    fontSize: '0.875rem',
-  },
-  urlCell: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    maxWidth: '400px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  colorIndicator: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '2px',
-    flexShrink: 0,
-  },
-  note: {
-    marginTop: '1rem',
-    fontSize: '0.875rem',
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  code: {
-    backgroundColor: '#e0e0e0',
-    padding: '0.25rem 0.5rem',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-  },
-};
 
 export default TopPagesChart;

@@ -166,27 +166,57 @@
   }
 }
 
-/* Dark mode support */
+/* Dark mode support - data-theme attribute */
+:root[data-theme='dark'] .filters,
+:root[data-theme='dark'] .pagination,
+:root[data-theme='dark'] .emptyState,
+:root.dark-theme .filters,
+:root.dark-theme .pagination,
+:root.dark-theme .emptyState {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+
+:root[data-theme='dark'] .searchInput,
+:root[data-theme='dark'] .filterButton,
+:root.dark-theme .searchInput,
+:root.dark-theme .filterButton {
+  background-color: var(--color-background-primary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+:root[data-theme='dark'] .filterButton:hover,
+:root.dark-theme .filterButton:hover {
+  background-color: var(--color-background-tertiary);
+}
+
+:root[data-theme='dark'] .fetchingOverlay,
+:root.dark-theme .fetchingOverlay {
+  background: var(--color-background-secondary);
+}
+
+/* Dark mode support - prefers-color-scheme fallback */
 @media (prefers-color-scheme: dark) {
   .filters,
   .pagination,
   .emptyState {
-    background: var(--surface-color, #1f2937);
-    border-color: var(--border-color, #374151);
+    background: var(--color-background-secondary, #1f2937);
+    border-color: var(--color-border-primary, #374151);
   }
 
   .searchInput,
   .filterButton {
-    background-color: var(--surface-secondary, #111827);
-    border-color: var(--border-color, #374151);
-    color: var(--text-primary, #f9fafb);
+    background-color: var(--color-background-primary, #111827);
+    border-color: var(--color-border-primary, #374151);
+    color: var(--color-text-primary, #f9fafb);
   }
 
   .filterButton:hover {
-    background-color: var(--surface-hover, #1f2937);
+    background-color: var(--color-background-tertiary, #1f2937);
   }
 
   .fetchingOverlay {
-    background: var(--surface-color, #1f2937);
+    background: var(--color-background-secondary, #1f2937);
   }
 }

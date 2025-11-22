@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CountryDistribution } from '../../models/analytics';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 export interface GeoDistributionProps {
   data: CountryDistribution[];
@@ -10,6 +11,7 @@ type SortField = 'country' | 'visitors' | 'sessions' | 'percentage';
 type SortDirection = 'asc' | 'desc';
 
 export function GeoDistribution({ data, loading = false }: GeoDistributionProps) {
+  const colors = useThemeColors();
   const [sortField, setSortField] = useState<SortField>('visitors');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
@@ -31,6 +33,112 @@ export function GeoDistribution({ data, loading = false }: GeoDistributionProps)
 
     return multiplier * (a[sortField] - b[sortField]);
   });
+
+  const styles = {
+    container: {
+      backgroundColor: colors.background.secondary,
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '8px',
+      padding: '1.5rem',
+      marginBottom: '2rem',
+    },
+    title: {
+      margin: 0,
+      marginBottom: '1rem',
+      fontSize: '1.25rem',
+      fontWeight: 600,
+      color: colors.text.primary,
+    },
+    loadingContainer: {
+      height: '400px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    },
+    skeleton: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+    },
+    emptyState: {
+      height: '200px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      color: colors.text.secondary,
+    },
+    tableContainer: {
+      overflowX: 'auto' as const,
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse' as const,
+    },
+    tableHeaderRow: {
+      borderBottom: `2px solid ${colors.border.primary}`,
+    },
+    tableHeader: {
+      textAlign: 'left' as const,
+      padding: '0.75rem',
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      color: colors.text.secondary,
+      textTransform: 'uppercase' as const,
+    },
+    sortableHeader: {
+      textAlign: 'left' as const,
+      padding: '0.75rem',
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      color: colors.text.secondary,
+      textTransform: 'uppercase' as const,
+      cursor: 'pointer',
+      userSelect: 'none' as const,
+      transition: 'background-color 0.2s',
+    },
+    tableRow: {
+      borderBottom: `1px solid ${colors.border.primary}`,
+      transition: 'background-color 0.2s',
+    },
+    tableCell: {
+      padding: '0.75rem',
+      fontSize: '0.875rem',
+      color: colors.text.primary,
+    },
+    countryCell: {
+      display: 'flex',
+      alignItems: 'center' as const,
+      gap: '0.5rem',
+    },
+    countryName: {
+      fontWeight: 500,
+    },
+    progressBar: {
+      width: '100%',
+      height: '8px',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+      overflow: 'hidden' as const,
+      minWidth: '100px',
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: colors.primary.main,
+      borderRadius: '4px',
+      transition: 'width 0.3s ease',
+    },
+    footer: {
+      marginTop: '1rem',
+      paddingTop: '1rem',
+      borderTop: `1px solid ${colors.border.primary}`,
+    },
+    footerText: {
+      margin: 0,
+      fontSize: '0.875rem',
+      color: colors.text.secondary,
+    },
+  };
 
   if (loading) {
     return (
@@ -129,110 +237,5 @@ export function GeoDistribution({ data, loading = false }: GeoDistributionProps)
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    marginBottom: '2rem',
-  },
-  title: {
-    margin: 0,
-    marginBottom: '1rem',
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#333',
-  },
-  loadingContainer: {
-    height: '400px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-  },
-  emptyState: {
-    height: '200px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#666',
-  },
-  tableContainer: {
-    overflowX: 'auto',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  tableHeaderRow: {
-    borderBottom: '2px solid #e0e0e0',
-  },
-  tableHeader: {
-    textAlign: 'left',
-    padding: '0.75rem',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    color: '#666',
-    textTransform: 'uppercase',
-  },
-  sortableHeader: {
-    textAlign: 'left',
-    padding: '0.75rem',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    color: '#666',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    userSelect: 'none',
-    transition: 'background-color 0.2s',
-  },
-  tableRow: {
-    borderBottom: '1px solid #e0e0e0',
-    transition: 'background-color 0.2s',
-  },
-  tableCell: {
-    padding: '0.75rem',
-    fontSize: '0.875rem',
-  },
-  countryCell: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-  },
-  countryName: {
-    fontWeight: 500,
-  },
-  progressBar: {
-    width: '100%',
-    height: '8px',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    minWidth: '100px',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#0088FE',
-    borderRadius: '4px',
-    transition: 'width 0.3s ease',
-  },
-  footer: {
-    marginTop: '1rem',
-    paddingTop: '1rem',
-    borderTop: '1px solid #e0e0e0',
-  },
-  footerText: {
-    margin: 0,
-    fontSize: '0.875rem',
-    color: '#666',
-  },
-};
 
 export default GeoDistribution;

@@ -80,19 +80,48 @@
   margin-left: auto;
 }
 
-/* Dark mode support */
+/* Dark mode support - data-theme attribute */
+:root[data-theme='dark'] .card,
+:root.dark-theme .card {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+
+:root[data-theme='dark'] .description,
+:root.dark-theme .description {
+  background-color: var(--color-background-tertiary);
+}
+
+:root[data-theme='dark'] .metadata,
+:root.dark-theme .metadata {
+  border-top-color: var(--color-border-primary);
+}
+
+:root[data-theme='dark'] .activeStatus,
+:root.dark-theme .activeStatus {
+  background-color: #064e3b;
+  color: #86efac;
+}
+
+:root[data-theme='dark'] .inactiveStatus,
+:root.dark-theme .inactiveStatus {
+  background-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+/* Dark mode support - prefers-color-scheme fallback */
 @media (prefers-color-scheme: dark) {
   .card {
-    background: var(--surface-color, #1f2937);
-    border-color: var(--border-color, #374151);
+    background: var(--color-background-secondary, #1f2937);
+    border-color: var(--color-border-primary, #374151);
   }
 
   .description {
-    background-color: var(--surface-secondary, #111827);
+    background-color: var(--color-background-tertiary, #111827);
   }
 
   .metadata {
-    border-top-color: var(--border-color, #374151);
+    border-top-color: var(--color-border-primary, #374151);
   }
 
   .activeStatus {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeviceBreakdown as DeviceBreakdownType } from '../../models/analytics';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 // NOTE: This component requires recharts to be installed
 // Run: npm install recharts
@@ -12,7 +13,117 @@ export interface DeviceBreakdownProps {
 }
 
 export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps) {
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+  const colors = useThemeColors();
+
+  // Chart colors that work well in both themes
+  const chartColors = [
+    colors.charts.bar1,
+    colors.charts.bar2,
+    colors.charts.bar3,
+    colors.charts.bar4,
+    colors.charts.bar5,
+    colors.charts.line1,
+  ];
+
+  const styles = {
+    container: {
+      backgroundColor: colors.background.secondary,
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '8px',
+      padding: '1.5rem',
+      marginBottom: '2rem',
+    },
+    title: {
+      margin: 0,
+      marginBottom: '1rem',
+      fontSize: '1.25rem',
+      fontWeight: 600,
+      color: colors.text.primary,
+    },
+    loadingContainer: {
+      height: '300px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    },
+    skeleton: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+    },
+    emptyState: {
+      height: '300px',
+      display: 'flex',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      color: colors.text.secondary,
+    },
+    listContainer: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '1rem',
+    },
+    listItem: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '0.5rem',
+    },
+    deviceInfo: {
+      display: 'flex',
+      alignItems: 'center' as const,
+      gap: '0.5rem',
+    },
+    colorDot: {
+      width: '12px',
+      height: '12px',
+      borderRadius: '50%',
+      flexShrink: 0,
+    },
+    deviceName: {
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      flex: 1,
+      color: colors.text.primary,
+    },
+    deviceStats: {
+      display: 'flex',
+      gap: '0.5rem',
+      alignItems: 'center' as const,
+      fontSize: '0.875rem',
+    },
+    count: {
+      fontWeight: 600,
+      color: colors.text.primary,
+    },
+    percentage: {
+      color: colors.text.secondary,
+    },
+    progressBar: {
+      width: '100%',
+      height: '8px',
+      backgroundColor: colors.border.primary,
+      borderRadius: '4px',
+      overflow: 'hidden' as const,
+    },
+    progressFill: {
+      height: '100%',
+      borderRadius: '4px',
+      transition: 'width 0.3s ease',
+    },
+    note: {
+      marginTop: '0.5rem',
+      fontSize: '0.875rem',
+      color: colors.text.secondary,
+      fontStyle: 'italic' as const,
+    },
+    code: {
+      backgroundColor: colors.border.primary,
+      padding: '0.25rem 0.5rem',
+      borderRadius: '4px',
+      fontFamily: 'monospace',
+    },
+  };
 
   if (loading) {
     return (
@@ -55,7 +166,7 @@ export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps)
             dataKey="count"
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
             ))}
           </Pie>
           <Tooltip
@@ -64,10 +175,11 @@ export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps)
                 const data = payload[0].payload;
                 return (
                   <div style={{
-                    backgroundColor: 'white',
+                    backgroundColor: colors.charts.tooltip.background,
                     padding: '10px',
-                    border: '1px solid #ccc',
+                    border: `1px solid ${colors.charts.tooltip.border}`,
                     borderRadius: '4px',
+                    color: colors.charts.tooltip.text,
                   }}>
                     <p style={{ margin: 0, fontSize: '0.875rem' }}>
                       <strong>{data.device_type}</strong>
@@ -94,7 +206,7 @@ export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps)
         {data.map((device, index) => (
           <div key={index} style={styles.listItem}>
             <div style={styles.deviceInfo}>
-              <span style={{ ...styles.colorDot, backgroundColor: COLORS[index % COLORS.length] }}></span>
+              <span style={{ ...styles.colorDot, backgroundColor: chartColors[index % chartColors.length] }}></span>
               <span style={styles.deviceName}>{device.device_type}</span>
             </div>
             <div style={styles.deviceStats}>
@@ -106,7 +218,7 @@ export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps)
                 style={{
                   ...styles.progressFill,
                   width: `${device.percentage}%`,
-                  backgroundColor: COLORS[index % COLORS.length],
+                  backgroundColor: chartColors[index % chartColors.length],
                 }}
               ></div>
             </div>
@@ -119,103 +231,5 @@ export function DeviceBreakdown({ data, loading = false }: DeviceBreakdownProps)
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    marginBottom: '2rem',
-  },
-  title: {
-    margin: 0,
-    marginBottom: '1rem',
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#333',
-  },
-  loadingContainer: {
-    height: '300px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-  },
-  emptyState: {
-    height: '300px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#666',
-  },
-  listContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  listItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
-  deviceInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-  },
-  colorDot: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    flexShrink: 0,
-  },
-  deviceName: {
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    flex: 1,
-  },
-  deviceStats: {
-    display: 'flex',
-    gap: '0.5rem',
-    alignItems: 'center',
-    fontSize: '0.875rem',
-  },
-  count: {
-    fontWeight: 600,
-  },
-  percentage: {
-    color: '#666',
-  },
-  progressBar: {
-    width: '100%',
-    height: '8px',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: '4px',
-    transition: 'width 0.3s ease',
-  },
-  note: {
-    marginTop: '0.5rem',
-    fontSize: '0.875rem',
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  code: {
-    backgroundColor: '#e0e0e0',
-    padding: '0.25rem 0.5rem',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-  },
-};
 
 export default DeviceBreakdown;
