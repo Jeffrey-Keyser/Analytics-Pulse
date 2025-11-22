@@ -7,6 +7,8 @@ import apiKeysRouter from '../../apiKeys';
 import projectsRouter from '../../projects';
 import trackingRouter from '../../tracking';
 import aggregationRouter from '../../aggregation';
+import analyticsRouter from '../../analytics';
+import eventsRouter from '../../events';
 
 /**
  * API Version 1 Router
@@ -36,6 +38,10 @@ const v1Router = Router();
  *     description: Event tracking and ingestion endpoints
  *   - name: Aggregation
  *     description: Daily analytics aggregation and reporting
+ *   - name: Analytics
+ *     description: Analytics query endpoints for projects
+ *   - name: Events
+ *     description: Custom event query endpoints
  */
 
 // Mount authentication routes
@@ -61,6 +67,14 @@ v1Router.use('/track', trackingRouter);
 // Mount aggregation routes
 // Endpoints: /api/v1/aggregation/daily, /api/v1/aggregation/daily/all
 v1Router.use('/aggregation', aggregationRouter);
+
+// Mount analytics routes
+// Endpoints: /api/v1/projects/:id/analytics, /api/v1/projects/:id/realtime
+v1Router.use('/projects', analyticsRouter);
+
+// Mount events routes
+// Endpoints: /api/v1/projects/:id/events
+v1Router.use('/projects', eventsRouter);
 
 /**
  * @openapi
@@ -99,7 +113,10 @@ v1Router.get('/', (req, res) => {
       projects: '/api/v1/projects',
       apiKeys: '/api/v1/projects/:projectId/api-keys',
       tracking: '/api/v1/track',
-      aggregation: '/api/v1/aggregation'
+      aggregation: '/api/v1/aggregation',
+      analytics: '/api/v1/projects/:id/analytics',
+      realtime: '/api/v1/projects/:id/realtime',
+      events: '/api/v1/projects/:id/events'
     }
   });
 });

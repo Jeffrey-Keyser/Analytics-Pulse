@@ -223,6 +223,152 @@ export class EventsDal extends BaseDal {
     const result = await this.query<Event>(query, [sessionId]);
     return result.rows;
   }
+
+  /**
+   * Query custom events with filtering and pagination
+   */
+  async queryCustomEvents(params: {
+    projectId: string;
+    eventName?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+    offset?: number;
+  }): Promise<Event[]> {
+    let query = `
+      SELECT *
+      FROM events
+      WHERE project_id = $1
+        AND event_type = 'custom'
+    `;
+    const values: any[] = [params.projectId];
+    let paramIndex = 2;
+
+    // Filter by event name if provided
+    if (params.eventName) {
+      query += ` AND event_name = $${paramIndex}`;
+      values.push(params.eventName);
+      paramIndex++;
+    }
+
+    // Filter by start date if provided
+    if (params.startDate) {
+      query += ` AND timestamp >= $${paramIndex}`;
+      values.push(params.startDate);
+      paramIndex++;
+    }
+
+    // Filter by end date if provided
+    if (params.endDate) {
+      query += ` AND timestamp <= $${paramIndex}`;
+      values.push(params.endDate);
+      paramIndex++;
+    }
+
+    // Order by timestamp descending (most recent first)
+    query += ` ORDER BY timestamp DESC`;
+
+    // Add pagination
+    if (params.limit !== undefined) {
+      query += ` LIMIT $${paramIndex}`;
+      values.push(params.limit);
+      paramIndex++;
+    }
+
+    if (params.offset !== undefined) {
+      query += ` OFFSET $${paramIndex}`;
+      values.push(params.offset);
+    }
+
+    const result = await this.query<Event>(query, values);
+    return result.rows;
+  }
+
+  /**
+   * Count custom events matching the query
+   */
+  async countCustomEvents(params: {
+    projectId: string;
+    eventName?: string;
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<number> {
+    let query = `
+      SELECT COUNT(*) as count
+      FROM events
+      WHERE project_id = $1
+        AND event_type = 'custom'
+    `;
+    const values: any[] = [params.projectId];
+    let paramIndex = 2;
+
+    if (params.eventName) {
+      query += ` AND event_name = $${paramIndex}`;
+      values.push(params.eventName);
+      paramIndex++;
+    }
+
+    if (params.startDate) {
+      query += ` AND timestamp >= $${paramIndex}`;
+      values.push(params.startDate);
+      paramIndex++;
+    }
+
+    if (params.endDate) {
+      query += ` AND timestamp <= $${paramIndex}`;
+      values.push(params.endDate);
+    }
+
+    const result = await this.query<{ count: string }>(query, values);
+    return parseInt(result.rows[0].count, 10);
+  }
+
+  /**
+   * Get aggregated counts of custom events grouped by event name
+   */
+  async aggregateCustomEventCounts(params: {
+    projectId: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+  }): Promise<Array<{ event_name: string; count: number }>> {
+    let query = `
+      SELECT
+        event_name,
+        COUNT(*) as count
+      FROM events
+      WHERE project_id = $1
+        AND event_type = 'custom'
+        AND event_name IS NOT NULL
+    `;
+    const values: any[] = [params.projectId];
+    let paramIndex = 2;
+
+    if (params.startDate) {
+      query += ` AND timestamp >= $${paramIndex}`;
+      values.push(params.startDate);
+      paramIndex++;
+    }
+
+    if (params.endDate) {
+      query += ` AND timestamp <= $${paramIndex}`;
+      values.push(params.endDate);
+      paramIndex++;
+    }
+
+    query += ` GROUP BY event_name ORDER BY count DESC`;
+
+    if (params.limit !== undefined) {
+      query += ` LIMIT $${paramIndex}`;
+      values.push(params.limit);
+    }
+
+    const result = await this.query<{ event_name: string; count: string }>(query, values);
+    return result.rows.map(row => ({
+      event_name: row.event_name,
+      count: parseInt(row.count, 10)
+    }));
+  }
 }
 
 export default new EventsDal();
