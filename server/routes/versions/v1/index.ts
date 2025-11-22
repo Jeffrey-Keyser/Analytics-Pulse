@@ -9,6 +9,7 @@ import trackingRouter from '../../tracking';
 import aggregationRouter from '../../aggregation';
 import analyticsRouter from '../../analytics';
 import eventsRouter from '../../events';
+import campaignsRouter from '../../campaigns';
 
 /**
  * API Version 1 Router
@@ -42,6 +43,8 @@ const v1Router = Router();
  *     description: Analytics query endpoints for projects
  *   - name: Events
  *     description: Custom event query endpoints
+ *   - name: Campaigns
+ *     description: Campaign analytics and UTM parameter tracking
  */
 
 // Mount authentication routes
@@ -75,6 +78,10 @@ v1Router.use('/projects', analyticsRouter);
 // Mount events routes
 // Endpoints: /api/v1/projects/:id/events
 v1Router.use('/projects', eventsRouter);
+
+// Mount campaigns routes
+// Endpoints: /api/v1/projects/:id/campaigns
+v1Router.use('/projects', campaignsRouter);
 
 /**
  * @openapi
@@ -116,7 +123,8 @@ v1Router.get('/', (req, res) => {
       aggregation: '/api/v1/aggregation',
       analytics: '/api/v1/projects/:id/analytics',
       realtime: '/api/v1/projects/:id/realtime',
-      events: '/api/v1/projects/:id/events'
+      events: '/api/v1/projects/:id/events',
+      campaigns: '/api/v1/projects/:id/campaigns'
     }
   });
 });

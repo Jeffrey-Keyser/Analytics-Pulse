@@ -169,3 +169,84 @@ export function deepMerge<T extends Record<string, any>>(
 
   return output;
 }
+
+/**
+ * UTM parameter interface
+ */
+export interface UTMParams {
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+}
+
+/**
+ * Extract UTM parameters from URL
+ * @param url - URL to extract UTM parameters from (defaults to current page)
+ * @returns Object with UTM parameters or null if none found
+ */
+export function extractUTMParams(url?: string): UTMParams | null {
+  try {
+    const urlObj = url ? new URL(url, window.location.href) : new URL(window.location.href);
+    const params = new URLSearchParams(urlObj.search);
+
+    const utmParams: UTMParams = {};
+    let hasParams = false;
+
+    // Extract UTM parameters
+    const utmKeys: Array<keyof UTMParams> = [
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content'
+    ];
+
+    for (const key of utmKeys) {
+      const value = params.get(key);
+      if (value) {
+        utmParams[key] = value;
+        hasParams = true;
+      }
+    }
+
+    return hasParams ? utmParams : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+/**
+ * Store UTM parameters in sessionStorage for attribution
+ * This allows attribution to persist across pageviews within the same session
+ */
+export function storeUTMParams(utmParams: UTMParams | null): void {
+  const STORAGE_KEY = '_ap_utm_params';
+
+  try {
+    if (utmParams) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(utmParams));
+    }
+  } catch (_error) {
+    // sessionStorage might be unavailable
+  }
+}
+
+/**
+ * Get stored UTM parameters from sessionStorage
+ */
+export function getStoredUTMParams(): UTMParams | null {
+  const STORAGE_KEY = '_ap_utm_params';
+
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_error) {
+    // sessionStorage might be unavailable or invalid JSON
+  }
+
+  return null;
+}

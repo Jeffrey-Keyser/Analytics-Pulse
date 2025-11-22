@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import eventsDal, { EventsDal, CreateEventParams } from '../dal/events';
+import eventsDal, { EventsDal, CreateEventParams, UTMParams } from '../dal/events';
 import sessionsDal, { SessionsDal } from '../dal/sessions';
 import userAgentService, { UserAgentService } from '../services/userAgent';
 import geolocationService, { GeolocationService } from '../services/geolocation';
@@ -19,6 +19,7 @@ export interface TrackEventRequest {
   language?: string;
   timezone?: string;
   custom_data?: Record<string, any>;
+  utm_params?: UTMParams;
 }
 
 export interface TrackEventResponse {
@@ -79,7 +80,8 @@ export class TrackingController {
         viewport_height,
         language,
         timezone,
-        custom_data
+        custom_data,
+        utm_params
       } = req.body as TrackEventRequest;
 
       if (!event_type || !session_id || !url) {
@@ -126,6 +128,7 @@ export class TrackingController {
         language: language || undefined,
         timezone: timezone || undefined,
         custom_data: custom_data || undefined,
+        utm_params: utm_params || undefined,
         timestamp: new Date()
       };
 
@@ -253,6 +256,7 @@ export class TrackingController {
           language: event.language,
           timezone: event.timezone,
           custom_data: event.custom_data,
+          utm_params: event.utm_params,
           timestamp: new Date()
         });
       }

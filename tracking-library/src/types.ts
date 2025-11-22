@@ -126,6 +126,36 @@ export interface PageViewMetadata {
 }
 
 /**
+ * UTM parameter interface for campaign tracking
+ */
+export interface UTMParams {
+  /**
+   * Campaign source (e.g., 'google', 'facebook', 'newsletter')
+   */
+  utm_source?: string;
+
+  /**
+   * Campaign medium (e.g., 'cpc', 'email', 'social')
+   */
+  utm_medium?: string;
+
+  /**
+   * Campaign name (e.g., 'summer_sale', 'product_launch')
+   */
+  utm_campaign?: string;
+
+  /**
+   * Campaign term (e.g., paid keywords)
+   */
+  utm_term?: string;
+
+  /**
+   * Campaign content (e.g., link text, ad variation)
+   */
+  utm_content?: string;
+}
+
+/**
  * Event data structure for analytics events
  */
 export interface EventData {
@@ -168,6 +198,11 @@ export interface EventData {
    * Timestamp when the event occurred
    */
   timestamp?: number;
+
+  /**
+   * UTM parameters for campaign attribution
+   */
+  utmParams?: UTMParams;
 }
 
 /**

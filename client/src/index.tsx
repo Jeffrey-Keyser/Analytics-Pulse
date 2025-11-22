@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { getStore } from "./app/store";
 import { ThemeProvider } from "@jeffrey-keyser/personal-ui-kit";
+import { AnalyticsThemeProvider } from "./contexts/ThemeContext";
 import { TemplateAuthProvider } from "./components/auth";
 import { templateAuthSettings } from "./config/auth";
 import App from "./App";
@@ -15,7 +16,11 @@ const store = getStore();
 root.render(
   <React.StrictMode>
     <TemplateAuthProvider config={templateAuthSettings.provider}>
-      <ThemeProvider children={<Provider store={store} children={<App />} />} />
+      <ThemeProvider children={
+        <AnalyticsThemeProvider children={
+          <Provider store={store} children={<App />} />
+        } />
+      } />
     </TemplateAuthProvider>
   </React.StrictMode>
 );

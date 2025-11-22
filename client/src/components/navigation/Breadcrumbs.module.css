@@ -48,26 +48,53 @@
   font-weight: 500;
 }
 
-/* Dark mode support */
+/* Dark mode support - data-theme attribute */
+:root[data-theme='dark'] .breadcrumbs,
+:root.dark-theme .breadcrumbs {
+  background-color: var(--color-background-secondary);
+  border-bottom-color: var(--color-border-primary);
+}
+
+:root[data-theme='dark'] .breadcrumbLink,
+:root.dark-theme .breadcrumbLink {
+  color: var(--color-text-secondary);
+}
+
+:root[data-theme='dark'] .breadcrumbLink:hover,
+:root.dark-theme .breadcrumbLink:hover {
+  color: var(--color-primary-main);
+}
+
+:root[data-theme='dark'] .breadcrumbSeparator,
+:root.dark-theme .breadcrumbSeparator {
+  color: var(--color-text-disabled);
+}
+
+:root[data-theme='dark'] .breadcrumbCurrent,
+:root.dark-theme .breadcrumbCurrent {
+  color: var(--color-text-primary);
+}
+
+/* Dark mode support - prefers-color-scheme fallback */
 @media (prefers-color-scheme: dark) {
   .breadcrumbs {
-    background-color: var(--bg-secondary, #1a1a1a);
-    border-bottom-color: var(--border-color, #333);
+    background-color: var(--color-background-secondary, #1a1a1a);
+    border-bottom-color: var(--color-border-primary, #333);
   }
 
   .breadcrumbLink {
-    color: var(--text-secondary, #adb5bd);
+    color: var(--color-text-secondary, #adb5bd);
   }
 
   .breadcrumbLink:hover {
-    color: var(--primary-color, #4da3ff);
+    color: var(--color-primary-main, #4da3ff);
   }
 
   .breadcrumbSeparator {
-    color: var(--text-muted, #6c757d);
+    color: var(--color-text-disabled, #6c757d);
   }
 
   .breadcrumbCurrent {
-    color: var(--text-primary, #f8f9fa);
+    color: var(--color-text-primary, #f8f9fa);
   }
 }

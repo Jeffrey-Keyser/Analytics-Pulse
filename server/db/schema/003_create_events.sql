@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS events (
     language VARCHAR(10),
     timezone VARCHAR(50),
     custom_data JSONB,
+    utm_params JSONB,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id, timestamp)
@@ -41,6 +42,10 @@ CREATE INDEX IF NOT EXISTS idx_events_os ON events(os, timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_events_device_type ON events(device_type, timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_events_custom_data ON events USING GIN (custom_data);
 CREATE INDEX IF NOT EXISTS idx_events_url ON events(url);
+CREATE INDEX IF NOT EXISTS idx_events_utm_params ON events USING GIN (utm_params);
+CREATE INDEX IF NOT EXISTS idx_events_utm_source ON events ((utm_params->>'utm_source'));
+CREATE INDEX IF NOT EXISTS idx_events_utm_medium ON events ((utm_params->>'utm_medium'));
+CREATE INDEX IF NOT EXISTS idx_events_utm_campaign ON events ((utm_params->>'utm_campaign'));
 
 -- Function to create a new monthly partition
 CREATE OR REPLACE FUNCTION create_events_partition(partition_date DATE)
@@ -120,5 +125,6 @@ COMMENT ON COLUMN events.viewport_height IS 'Viewport height in pixels';
 COMMENT ON COLUMN events.language IS 'Browser language setting';
 COMMENT ON COLUMN events.timezone IS 'Browser timezone';
 COMMENT ON COLUMN events.custom_data IS 'Custom event properties (JSON)';
+COMMENT ON COLUMN events.utm_params IS 'UTM parameters for campaign attribution (JSON: utm_source, utm_medium, utm_campaign, utm_term, utm_content)';
 COMMENT ON COLUMN events.timestamp IS 'When the event occurred (used for partitioning)';
 COMMENT ON COLUMN events.created_at IS 'When the event was recorded in the database';

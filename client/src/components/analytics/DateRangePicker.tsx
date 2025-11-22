@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+import { useThemeColors } from '../../contexts/ThemeContext';
 
 export interface DateRangePickerProps {
   onDateRangeChange: (startDate: string, endDate: string) => void;
@@ -15,6 +16,7 @@ const presetRanges = [
 ];
 
 export function DateRangePicker({ onDateRangeChange, initialStartDate, initialEndDate }: DateRangePickerProps) {
+  const colors = useThemeColors();
   const today = endOfDay(new Date());
   const defaultStart = initialStartDate || format(subDays(today, 30), 'yyyy-MM-dd');
   const defaultEnd = initialEndDate || format(today, 'yyyy-MM-dd');
@@ -38,6 +40,57 @@ export function DateRangePicker({ onDateRangeChange, initialStartDate, initialEn
       setEndDate(value);
       onDateRangeChange(startDate, value);
     }
+  };
+
+  const styles = {
+    container: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '1rem',
+      marginBottom: '2rem',
+      padding: '1rem',
+      backgroundColor: colors.background.secondary,
+      borderRadius: '8px',
+      border: `1px solid ${colors.border.primary}`,
+    },
+    presets: {
+      display: 'flex',
+      gap: '0.5rem',
+      flexWrap: 'wrap' as const,
+    },
+    presetButton: {
+      padding: '0.5rem 1rem',
+      border: `1px solid ${colors.primary.main}`,
+      backgroundColor: colors.background.primary,
+      color: colors.primary.main,
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '0.875rem',
+      transition: 'all 0.2s',
+    },
+    customInputs: {
+      display: 'flex',
+      gap: '1rem',
+      flexWrap: 'wrap' as const,
+    },
+    inputGroup: {
+      display: 'flex',
+      alignItems: 'center' as const,
+      gap: '0.5rem',
+    },
+    label: {
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: colors.text.primary,
+    },
+    dateInput: {
+      padding: '0.5rem',
+      border: `1px solid ${colors.border.primary}`,
+      borderRadius: '4px',
+      fontSize: '0.875rem',
+      backgroundColor: colors.background.primary,
+      color: colors.text.primary,
+    },
   };
 
   return (
@@ -85,54 +138,5 @@ export function DateRangePicker({ onDateRangeChange, initialStartDate, initialEn
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    marginBottom: '2rem',
-    padding: '1rem',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '8px',
-    border: '1px solid #e0e0e0',
-  },
-  presets: {
-    display: 'flex',
-    gap: '0.5rem',
-    flexWrap: 'wrap',
-  },
-  presetButton: {
-    padding: '0.5rem 1rem',
-    border: '1px solid #007bff',
-    backgroundColor: 'white',
-    color: '#007bff',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '0.875rem',
-    transition: 'all 0.2s',
-  },
-  customInputs: {
-    display: 'flex',
-    gap: '1rem',
-    flexWrap: 'wrap',
-  },
-  inputGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-  },
-  label: {
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    color: '#333',
-  },
-  dateInput: {
-    padding: '0.5rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '0.875rem',
-  },
-};
 
 export default DateRangePicker;

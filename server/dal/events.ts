@@ -1,6 +1,14 @@
 import { BaseDal } from '@jeffrey-keyser/database-base-config';
 import pool from '../db/connection';
 
+export interface UTMParams {
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+}
+
 export interface Event {
   id: string;
   project_id: string;
@@ -23,6 +31,7 @@ export interface Event {
   language: string | null;
   timezone: string | null;
   custom_data: Record<string, any> | null;
+  utm_params: UTMParams | null;
   timestamp: Date;
   created_at: Date;
 }
@@ -48,6 +57,7 @@ export interface CreateEventParams {
   language?: string;
   timezone?: string;
   custom_data?: Record<string, any>;
+  utm_params?: UTMParams;
   timestamp?: Date;
 }
 
@@ -66,11 +76,11 @@ export class EventsDal extends BaseDal {
         project_id, session_id, event_type, event_name, url, referrer,
         user_agent, ip_hash, country, city, browser, os, device_type,
         screen_width, screen_height, viewport_width, viewport_height,
-        language, timezone, custom_data, timestamp
+        language, timezone, custom_data, utm_params, timestamp
       )
       VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
-        $14, $15, $16, $17, $18, $19, $20, $21
+        $14, $15, $16, $17, $18, $19, $20, $21, $22
       )
     `;
 
@@ -95,6 +105,7 @@ export class EventsDal extends BaseDal {
       params.language || null,
       params.timezone || null,
       params.custom_data ? JSON.stringify(params.custom_data) : null,
+      params.utm_params ? JSON.stringify(params.utm_params) : null,
       params.timestamp || new Date()
     ];
 
@@ -137,6 +148,7 @@ export class EventsDal extends BaseDal {
         event.language || null,
         event.timezone || null,
         event.custom_data ? JSON.stringify(event.custom_data) : null,
+        event.utm_params ? JSON.stringify(event.utm_params) : null,
         event.timestamp || new Date()
       ];
 
@@ -153,7 +165,7 @@ export class EventsDal extends BaseDal {
         project_id, session_id, event_type, event_name, url, referrer,
         user_agent, ip_hash, country, city, browser, os, device_type,
         screen_width, screen_height, viewport_width, viewport_height,
-        language, timezone, custom_data, timestamp
+        language, timezone, custom_data, utm_params, timestamp
       )
       VALUES ${placeholders.join(', ')}
     `;

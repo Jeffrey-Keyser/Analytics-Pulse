@@ -1,3 +1,118 @@
+/* CSS Variables for Light Theme (default) */
+:root {
+  /* Background colors */
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8f9fa;
+  --color-background-tertiary: #f0f0f0;
+  --color-background-elevated: #ffffff;
+
+  /* Text colors */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-disabled: #999999;
+  --color-text-inverse: #ffffff;
+
+  /* Border colors */
+  --color-border-primary: #e0e0e0;
+  --color-border-secondary: #f0f0f0;
+  --color-border-focus: #1976d2;
+
+  /* Primary colors */
+  --color-primary-main: #1976d2;
+  --color-primary-light: #42a5f5;
+  --color-primary-dark: #1565c0;
+  --color-primary-contrast: #ffffff;
+
+  /* Chart colors */
+  --color-chart-line1: #1976d2;
+  --color-chart-line2: #388e3c;
+  --color-chart-line3: #f57c00;
+  --color-chart-grid: #e0e0e0;
+  --color-chart-axis: #666666;
+  --color-chart-tooltip-bg: #ffffff;
+  --color-chart-tooltip-text: #333333;
+  --color-chart-tooltip-border: #e0e0e0;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+  /* Legacy support */
+  --color-divider: #e0e0e0;
+}
+
+/* Dark Theme */
+:root[data-theme='dark'],
+:root.dark-theme {
+  /* Background colors */
+  --color-background-primary: #1a1a1a;
+  --color-background-secondary: #2d2d2d;
+  --color-background-tertiary: #3a3a3a;
+  --color-background-elevated: #424242;
+
+  /* Text colors */
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #b0b0b0;
+  --color-text-disabled: #707070;
+  --color-text-inverse: #1a1a1a;
+
+  /* Border colors */
+  --color-border-primary: #404040;
+  --color-border-secondary: #333333;
+  --color-border-focus: #4a9eff;
+
+  /* Primary colors */
+  --color-primary-main: #4a9eff;
+  --color-primary-light: #7ab8ff;
+  --color-primary-dark: #2b7fd9;
+  --color-primary-contrast: #ffffff;
+
+  /* Chart colors */
+  --color-chart-line1: #4a9eff;
+  --color-chart-line2: #66bb6a;
+  --color-chart-line3: #ffa726;
+  --color-chart-grid: #404040;
+  --color-chart-axis: #b0b0b0;
+  --color-chart-tooltip-bg: #424242;
+  --color-chart-tooltip-text: #e0e0e0;
+  --color-chart-tooltip-border: #555555;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+
+  /* Legacy support */
+  --color-divider: #333333;
+  --color-background-primary-dark: #1a1a1a;
+  --color-background-secondary-dark: #242424;
+  --color-divider-dark: #333333;
+}
+
+/* Smooth theme transitions */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  * {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -5,9 +120,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Pulse animation for loading skeletons */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
