@@ -15,6 +15,9 @@ import {
   isOutboundLink,
   deepMerge,
   debounce,
+  extractUTMParams,
+  storeUTMParams,
+  getStoredUTMParams,
 } from './utils';
 import { SessionManager } from './session';
 import { EventQueue } from './queue';
@@ -172,6 +175,21 @@ export class AnalyticsPulse {
     // Determine referrer: use initial referrer for first pageview, previous URL for subsequent
     const referrer = this.previousUrl === null ? this.initialReferrer : this.previousUrl;
 
+    // Extract UTM parameters from URL
+    const utmParams = extractUTMParams();
+
+    // Store UTM parameters for session attribution
+    // Only store if new UTM params are found (preserves first-touch attribution)
+    if (utmParams) {
+      const existingUTM = getStoredUTMParams();
+      if (!existingUTM) {
+        storeUTMParams(utmParams);
+      }
+    }
+
+    // Use stored UTM params if no new ones found (for attribution across pageviews)
+    const utmToUse = utmParams || getStoredUTMParams();
+
     // Update URL tracking
     this.previousUrl = this.currentUrl;
     this.currentUrl = currentUrl;
@@ -191,6 +209,7 @@ export class AnalyticsPulse {
       userAgent: getUserAgent(),
       props,
       timestamp: Date.now(),
+      utmParams: utmToUse || undefined,
     };
 
     this.sendEvent(eventData);
@@ -240,12 +259,16 @@ export class AnalyticsPulse {
       }
     }
 
+    // Include stored UTM params for attribution
+    const utmParams = getStoredUTMParams();
+
     const eventData: EventData = {
       name: eventName,
       url: getPageUrl(),
       userAgent: getUserAgent(),
       props: data,
       timestamp: Date.now(),
+      utmParams: utmParams || undefined,
     };
 
     this.log('Tracking custom event', { eventName, data, sessionId: this.sessionManager.getSessionId() });
