@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Button, LoadingSpinner } from '@jeffrey-keyser/personal-ui-kit';
+import { Container, Button, LoadingSpinner, Toast } from '@jeffrey-keyser/personal-ui-kit';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, subDays } from 'date-fns';
-import { useGetProjectAnalyticsQuery } from '../reducers/analytics.api';
+import { useGetProjectAnalyticsQuery, useExportAnalyticsMutation } from '../reducers/analytics.api';
 import {
   DateRangePicker,
   SummaryCards,
@@ -10,7 +10,10 @@ import {
   TopPagesChart,
   DeviceBreakdown,
   GeoDistribution,
+  ExportButton,
 } from '../components/analytics';
+import { ExportFormat } from '../models/export';
+import { handleExportDownload } from '../utils/download';
 
 /**
  * Project Detail Page
@@ -25,6 +28,14 @@ export function ProjectDetail() {
   const [startDate, setStartDate] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [granularity, setGranularity] = useState<'day' | 'week' | 'month'>('day');
+
+  // Toast notification state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+
+  // Export mutation
+  const [exportAnalytics, { isLoading: isExporting }] = useExportAnalyticsMutation();
 
   // Fetch analytics data
   const { data, isLoading, isError, error } = useGetProjectAnalyticsQuery(
@@ -43,6 +54,30 @@ export function ProjectDetail() {
   const handleDateRangeChange = (newStartDate: string, newEndDate: string) => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
+  };
+
+  const handleExport = async (format: ExportFormat) => {
+    try {
+      const blob = await exportAnalytics({
+        projectId: id!,
+        format,
+        start_date: startDate,
+        end_date: endDate,
+        granularity,
+        limit: 10,
+      }).unwrap();
+
+      handleExportDownload(blob, 'analytics', format, startDate, endDate);
+
+      setToastMessage(`Analytics data exported successfully as ${format.toUpperCase()}`);
+      setToastType('success');
+      setShowToast(true);
+    } catch (error) {
+      console.error('Export failed:', error);
+      setToastMessage('Failed to export analytics data. Please try again.');
+      setToastType('error');
+      setShowToast(true);
+    }
   };
 
   if (!id) {
@@ -89,12 +124,25 @@ export function ProjectDetail() {
           </button>
         </div>
 
-        {/* Date Range Picker */}
-        <DateRangePicker
-          onDateRangeChange={handleDateRangeChange}
-          initialStartDate={startDate}
-          initialEndDate={endDate}
-        />
+        {/* Date Range Picker and Export Button */}
+        <div style={styles.controlsContainer}>
+          <DateRangePicker
+            onDateRangeChange={handleDateRangeChange}
+            initialStartDate={startDate}
+            initialEndDate={endDate}
+          />
+          <div style={styles.exportButtonContainer}>
+            <ExportButton
+              projectId={id!}
+              startDate={startDate}
+              endDate={endDate}
+              dataType="analytics"
+              onExport={handleExport}
+              disabled={isLoading || isError}
+              loading={isExporting}
+            />
+          </div>
+        </div>
 
         {/* Granularity Selector */}
         <div style={styles.granularityContainer}>
@@ -197,6 +245,16 @@ export function ProjectDetail() {
             </div>
           </>
         )}
+
+        {/* Toast Notification */}
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            type={toastType}
+            onClose={() => setShowToast(false)}
+            duration={4000}
+          />
+        )}
       </div>
     </Container>
   );
@@ -267,6 +325,16 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '4px',
     fontSize: '0.875rem',
     cursor: 'pointer',
+  },
+  controlsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  exportButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   loadingContainer: {
     display: 'flex',

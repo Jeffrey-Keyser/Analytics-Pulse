@@ -12,6 +12,7 @@ import {
   CampaignStatsByParameterParams,
   CampaignConversionsParams,
 } from "../models/campaigns";
+import { ExportCampaignsParams } from "../models/export";
 
 export const campaignsApi = createApiSlice({
   name: "campaignsApi",
@@ -81,6 +82,24 @@ export const campaignsApi = createApiSlice({
         return `/api/v1/projects/${projectId}/campaigns/${encodeURIComponent(campaignName)}/conversions${queryString ? `?${queryString}` : ''}`;
       },
     }),
+    exportCampaigns: builder.mutation<Blob, ExportCampaignsParams & { format: 'csv' | 'json' }>({
+      query: ({ projectId, format, ...params }) => {
+        const queryParams = new URLSearchParams();
+
+        queryParams.append('format', format);
+        if (params.start_date) queryParams.append('start_date', params.start_date);
+        if (params.end_date) queryParams.append('end_date', params.end_date);
+        if (params.limit !== undefined) queryParams.append('limit', params.limit.toString());
+        if (params.offset !== undefined) queryParams.append('offset', params.offset.toString());
+
+        const queryString = queryParams.toString();
+        return {
+          url: `/api/v1/projects/${projectId}/campaigns/export${queryString ? `?${queryString}` : ''}`,
+          method: 'GET',
+          responseHandler: (response: Response) => response.blob(),
+        };
+      },
+    }),
   }),
   options: {
     credentials: "include",
@@ -94,4 +113,5 @@ export const {
   useGetTopCampaignsQuery,
   useGetCampaignStatsByParameterQuery,
   useGetCampaignConversionsQuery,
+  useExportCampaignsMutation,
 } = campaignsApi;
