@@ -31,8 +31,9 @@ import pool from "./db/connection";
 // Auth middleware imports
 const { setupPayAuth } = require("@jeffrey-keyser/pay-auth-integration/server");
 
-// Cron jobs - partition maintenance (auto-starts on import)
+// Cron jobs (auto-start on import)
 import "./cron/partitionMaintenance";
+import "./cron/emailReporting";
 
 // Validate Pay service configuration
 if (!config.PAY_SERVICE_URL) {
