@@ -4,6 +4,7 @@ import sessionsDal, { SessionsDal } from '../dal/sessions';
 import userAgentService, { UserAgentService } from '../services/userAgent';
 import geolocationService, { GeolocationService } from '../services/geolocation';
 import sessionsService, { SessionsService, SessionMetadata } from '../services/sessions';
+import goalTrackingService, { GoalTrackingService } from '../services/goalTracking';
 
 export interface TrackEventRequest {
   event_type: string;
@@ -32,19 +33,22 @@ export class TrackingController {
   private userAgentService: UserAgentService;
   private geolocationService: GeolocationService;
   private sessionsService: SessionsService;
+  private goalTrackingService: GoalTrackingService;
 
   constructor(
     eventsDalInstance: EventsDal = eventsDal,
     sessionsDalInstance: SessionsDal = sessionsDal,
     userAgentServiceInstance: UserAgentService = userAgentService,
     geolocationServiceInstance: GeolocationService = geolocationService,
-    sessionsServiceInstance: SessionsService = sessionsService
+    sessionsServiceInstance: SessionsService = sessionsService,
+    goalTrackingServiceInstance: GoalTrackingService = goalTrackingService
   ) {
     this.eventsDal = eventsDalInstance;
     this.sessionsDal = sessionsDalInstance;
     this.userAgentService = userAgentServiceInstance;
     this.geolocationService = geolocationServiceInstance;
     this.sessionsService = sessionsServiceInstance;
+    this.goalTrackingService = goalTrackingServiceInstance;
   }
 
   /**
@@ -135,6 +139,11 @@ export class TrackingController {
       // Insert event asynchronously (fire and forget for performance)
       this.eventsDal.create(eventParams).catch(err => {
         console.error('Failed to insert event:', err);
+      });
+
+      // Check for goal completions asynchronously (fire and forget)
+      this.goalTrackingService.checkAndRecordGoalCompletions(eventParams).catch(err => {
+        console.error('Failed to check goal completions:', err);
       });
 
       // Upsert session record using SessionsService
@@ -265,6 +274,11 @@ export class TrackingController {
       if (eventParams.length > 0) {
         this.eventsDal.createBatch(eventParams).catch(err => {
           console.error('Failed to batch insert events:', err);
+        });
+
+        // Check for goal completions in batch (fire and forget)
+        this.goalTrackingService.batchCheckGoalCompletions(eventParams).catch(err => {
+          console.error('Failed to batch check goal completions:', err);
         });
       }
 
