@@ -31,6 +31,9 @@ import pool from "./db/connection";
 // Auth middleware imports
 const { setupPayAuth } = require("@jeffrey-keyser/pay-auth-integration/server");
 
+// Cron jobs - partition maintenance (auto-starts on import)
+import "./cron/partitionMaintenance";
+
 // Validate Pay service configuration
 if (!config.PAY_SERVICE_URL) {
   console.warn(
@@ -191,6 +194,10 @@ const serverConfig: ServerConfig = {
       {
         name: "Diagnostics",
         description: "System health and diagnostic endpoints",
+      },
+      {
+        name: "Partitions",
+        description: "Database partition management and monitoring",
       },
     ],
     servers: [

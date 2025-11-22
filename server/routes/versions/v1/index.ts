@@ -12,6 +12,7 @@ import eventsRouter from '../../events';
 import campaignsRouter from '../../campaigns';
 import exportRouter from '../../export';
 import goalsRouter from '../../goals';
+import partitionsRouter from '../../partitions';
 
 /**
  * API Version 1 Router
@@ -51,6 +52,8 @@ const v1Router = Router();
  *     description: Data export endpoints for analytics, events, and campaigns
  *   - name: Goals
  *     description: Goal and conversion tracking endpoints
+ *   - name: Partitions
+ *     description: Database partition management and monitoring endpoints
  */
 
 // Mount authentication routes
@@ -97,6 +100,10 @@ v1Router.use('/projects', exportRouter);
 // Endpoints: /api/v1/projects/:id/goals, /api/v1/projects/:id/goals/:goalId, /api/v1/projects/:id/goals/completions, /api/v1/projects/:id/goals/funnel
 v1Router.use('/projects', goalsRouter);
 
+// Mount partitions routes
+// Endpoints: /api/v1/partitions/health, /api/v1/partitions/list, /api/v1/partitions/maintenance
+v1Router.use('/partitions', partitionsRouter);
+
 /**
  * @openapi
  * /api/v1:
@@ -140,6 +147,7 @@ v1Router.get('/', (req, res) => {
       events: '/api/v1/projects/:id/events',
       campaigns: '/api/v1/projects/:id/campaigns',
       goals: '/api/v1/projects/:id/goals',
+      partitions: '/api/v1/partitions',
       export: {
         analytics: '/api/v1/projects/:id/analytics/export',
         events: '/api/v1/projects/:id/events/export',

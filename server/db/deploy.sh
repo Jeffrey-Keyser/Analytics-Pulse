@@ -26,6 +26,12 @@ if [ -d "./db/stored_procedures" ] && [ "$(ls -A ./db/stored_procedures/*.sql 2>
   npx db-deploy directory ./db/stored_procedures --export-logs ./db/migration_log.txt 2>&1 | tee -a $LOG_FILE
 fi
 
+# Deploy partition management scripts
+if [ -d "./db/scripts" ] && [ "$(ls -A ./db/scripts/*.sql 2>/dev/null)" ]; then
+  echo "Running partition management scripts..." | tee -a $LOG_FILE
+  npx db-deploy directory ./db/scripts --export-logs ./db/migration_log.txt 2>&1 | tee -a $LOG_FILE
+fi
+
 # Create session tables using package CLI
 echo "Creating session tables..." | tee -a $LOG_FILE
 # Use the schema from environment variable if available
