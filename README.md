@@ -1,41 +1,157 @@
 # Analytics-Pulse
 
-A privacy-focused analytics platform built with serverless architecture. Track and analyze user behavior across your websites without compromising user privacy.
+**Privacy-First Web Analytics Platform**
+
+Analytics-Pulse is a self-hosted, privacy-focused web analytics platform built on serverless AWS infrastructure. Track and analyze website traffic, user behavior, and conversions without compromising user privacy or data ownership.
+
+## 🌟 Why Analytics-Pulse?
+
+- **🔒 Privacy-First**: No cookies, respects Do Not Track, anonymous visitor tracking via hashed IPs
+- **🏠 Self-Hosted**: Complete data ownership and control on your AWS infrastructure
+- **⚡ High-Performance**: Optimized for 10,000+ events/second with <50ms p99 latency
+- **💰 Cost-Efficient**: Serverless architecture scales to zero, pay only for what you use
+- **🌍 GDPR/CCPA Compliant**: Built for privacy regulations from the ground up
+- **📊 Real-Time Analytics**: Live dashboards with active visitor tracking
+- **🎯 Conversion Tracking**: Goals, funnels, and campaign attribution (UTM parameters)
+- **📧 Automated Reports**: Daily, weekly, and monthly email reports
+- **🚀 Easy Integration**: Simple JavaScript snippet, npm package, or REST API
 
 Built on the ServerlessWebTemplate foundation, this project utilizes Terraform for infrastructure management and includes pre-configured authentication using the Pay service integration package.
 
-## ✨ Enhanced Features
+## ✨ Core Features
 
-This template now includes comprehensive enhancements to accelerate development and improve the development experience:
+### 📊 Comprehensive Analytics
+- **Historical Analytics**: Pageviews, unique visitors, sessions, bounce rate, average session duration
+- **Real-Time Dashboard**: Active visitors, live pageviews, current pages being viewed
+- **Time-Series Data**: Day/week/month granularity with customizable date ranges
+- **Traffic Sources**: Referrer tracking, UTM campaign attribution, geographic distribution
+- **Device Intelligence**: Browser, OS, device type, screen resolution breakdown
+- **Custom Events**: Track any user interaction with custom properties (up to 5KB per event)
 
-### 🔐 Global Authentication Modal
-- **Automatic Protection**: All protected routes automatically trigger authentication when needed
-- **Guest Login Support**: Quick access for testing and demonstration purposes  
-- **Seamless UX**: Auto-close on successful authentication with session persistence
-- **Centralized Management**: Global auth modal context handles all authentication UI
+### 🎯 Conversion Tracking
+- **Flexible Goals**: Event-based, pageview-based, and value-based goal types
+- **Funnel Analysis**: Multi-step conversion path tracking
+- **Campaign Performance**: UTM parameter tracking with first-touch attribution
+- **Conversion Rates**: Automatic calculation of goal completion rates
+- **Custom Properties**: Attach metadata to track specific conversion contexts
 
-### 🎨 Component Showcase
-- **Interactive Demos**: Live examples of all personal-ui-kit components
-- **Copy-Paste Ready**: Code snippets for immediate use in your projects
-- **Organized Sections**: Atoms, Molecules, and Theme showcases for easy browsing
-- **Development Tool**: Perfect for exploring available UI components during development
+### 📈 Campaign Analytics
+- **UTM Parameter Support**: Source, medium, campaign, term, content tracking
+- **Campaign Comparison**: Compare multiple campaigns side-by-side
+- **Top Campaigns**: Identify best-performing campaigns by any metric
+- **Attribution**: First-touch attribution preserves original UTM across session
+- **Campaign Export**: Export campaign data for external analysis
 
-### 📊 Debug Dashboard  
-- **Real-Time Monitoring**: Live system health with 30-second auto-refresh
-- **Comprehensive Diagnostics**: Backend status, database health, and auth service monitoring
-- **Production Ready**: Ideal for verifying deployments and system status
-- **Visual Feedback**: Color-coded status indicators (green/yellow/red) for instant health assessment
-- **Memory & Performance**: Server uptime, memory usage, and response time tracking
+### 📧 Email Reporting
+- **Automated Reports**: Daily, weekly, and monthly scheduled reports
+- **Customizable Timing**: Configure send times and timezone preferences
+- **Test Reports**: Preview reports before enabling automation
+- **Unsubscribe Management**: Token-based opt-out system
+- **Report History**: Track sent, failed, and bounced reports
 
-### 🧭 Integrated Navigation
-- **Unified Access**: Easy navigation between Dashboard, Component Showcase, and Payment Demo
-- **Visual Feedback**: Active route highlighting for better user orientation
-- **Responsive Design**: Works seamlessly across desktop and mobile devices
+### 📦 Data Export
+- **Multiple Formats**: CSV and JSON export options
+- **Flexible Exports**: Analytics summaries, custom events, campaign data
+- **Date Range Filtering**: Export specific time periods
+- **Pagination Support**: Handle large datasets efficiently
 
-Access these features at:
-- **Dashboard**: `/` - System health and diagnostics
-- **Component Showcase**: `/showcase` - UI component library
-- **Payment Demo**: `/payment` - Payment integration example
+### 🔐 Privacy & Security
+- **No Cookies**: Cookieless tracking using session/visitor UUIDs
+- **IP Hashing**: IP addresses hashed (SHA-256) before storage
+- **Do Not Track**: Respects browser DNT settings
+- **API Key Authentication**: Secure tracking with bcrypt-hashed keys
+- **Rate Limiting**: 10,000 requests/hour per API key
+- **GDPR/CCPA Ready**: Privacy-first design for compliance
+
+### ⚡ Performance Optimized
+- **Partitioned Tables**: Monthly partitioning for fast queries (10-100x improvement)
+- **Daily Aggregation**: Pre-computed metrics for instant dashboard loading
+- **Redis Caching**: Distributed caching with in-memory fallback
+- **Connection Pooling**: Optimized database connections (2-20 pool size)
+- **Load Tested**: Proven at 10,000+ events/second with <50ms latency
+
+## 🚀 Quick Start
+
+### 1. Deploy Analytics-Pulse
+
+```bash
+# Clone the repository
+git clone https://github.com/Jeffrey-Keyser/Analytics-Pulse.git
+cd Analytics-Pulse
+
+# Run automated setup and deployment
+export GITHUB_TOKEN="your_github_pat"
+./scripts/new-service-auto.sh analytics-pulse yourdomain.com
+```
+
+See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed deployment instructions.
+
+### 2. Create a Project
+
+Log in to your Analytics-Pulse dashboard and create a new project for your website:
+
+1. Navigate to **Projects** → **Create New Project**
+2. Enter your website name and domain
+3. Click **Create Project**
+
+### 3. Generate an API Key
+
+1. Open your project settings
+2. Go to **API Keys** tab
+3. Click **Generate New Key**
+4. **Save the key immediately** (shown only once!)
+
+### 4. Install Tracking Code
+
+Add the tracking snippet to your website's `<head>` section:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@analytics-pulse/tracking-library"></script>
+<script>
+  const analytics = new AnalyticsPulse('your-api-key', {
+    endpoint: 'https://api.yourdomain.com/api/v1/track',
+    autoTrack: true
+  });
+</script>
+```
+
+Or install via npm for modern applications:
+
+```bash
+npm install @analytics-pulse/tracking-library
+```
+
+```typescript
+import { AnalyticsPulse } from '@analytics-pulse/tracking-library';
+
+const analytics = new AnalyticsPulse('your-api-key', {
+  endpoint: 'https://api.yourdomain.com/api/v1/track',
+  autoTrack: true
+});
+
+// Track custom events
+analytics.track('button_click', { button: 'signup' });
+```
+
+See [TRACKING_GUIDE.md](./docs/TRACKING_GUIDE.md) for complete tracking documentation.
+
+### 5. View Analytics
+
+Visit your dashboard to see real-time and historical analytics:
+- **Real-Time**: See active visitors and current pageviews
+- **Historical**: Analyze trends, traffic sources, and top pages
+- **Campaigns**: Track UTM campaign performance
+- **Goals**: Set up and monitor conversions
+
+## 📚 Documentation
+
+- **[Getting Started Guide](./docs/GETTING_STARTED.md)** - Complete setup walkthrough
+- **[Tracking Guide](./docs/TRACKING_GUIDE.md)** - JavaScript library documentation
+- **[API Reference](./docs/API_REFERENCE.md)** - Complete REST API documentation
+- **[Architecture Overview](./docs/ARCHITECTURE.md)** - System design and architecture
+- **[Deployment Guide](./docs/DEPLOYMENT.md)** - Infrastructure and deployment
+- **[Privacy Policy Template](./docs/PRIVACY.md)** - Data handling and privacy practices
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to Analytics-Pulse
 
 ## Initial Project Setup
 
@@ -288,54 +404,172 @@ The API documentation is automatically generated from JSDoc comments in the rout
 
 - **Swagger UI Endpoint**: `/api-docs`
 - **Local Development**: `http://localhost:3001/api-docs`
+- **Complete API Reference**: [docs/API_REFERENCE.md](./docs/API_REFERENCE.md)
 
 ### API Overview
 
 Analytics-Pulse provides two types of API authentication:
 
 1. **Bearer Token Authentication** (Dashboard/Management APIs):
-   - Projects management (`/api/v1/projects`)
-   - API keys management (`/api/v1/projects/:projectId/api-keys`)
+   - Projects management
+   - API keys management
    - Analytics data retrieval
+   - Goals and campaigns
+   - Email reporting configuration
 
 2. **API Key Authentication** (Tracking APIs):
-   - Event tracking endpoints (coming in Phase 2)
+   - Event tracking endpoints
+   - Batch event tracking
    - Use API keys generated via the management endpoints
 
-### Available Endpoints
+### Key Endpoint Categories
 
-#### Projects API (`/api/v1/projects`)
-Manage analytics projects for your websites and applications.
+#### 📁 Project Management (`/api/v1/projects`)
+Create and manage analytics projects for your websites.
 
-- `GET /api/v1/projects` - List all projects (with pagination and filtering)
-- `POST /api/v1/projects` - Create a new project
-- `GET /api/v1/projects/:id` - Get project details
-- `PUT /api/v1/projects/:id` - Update project settings
-- `DELETE /api/v1/projects/:id` - Delete project (cascades to all events)
+```bash
+# List projects
+GET /api/v1/projects
 
-**Authentication**: Bearer token required
+# Create project
+POST /api/v1/projects
+{
+  "name": "My Website",
+  "domain": "example.com",
+  "description": "Main website analytics"
+}
 
-#### API Keys API (`/api/v1/projects/:projectId/api-keys`)
-Generate and manage API keys for event tracking.
+# Get project
+GET /api/v1/projects/:id
+```
 
-- `GET /api/v1/projects/:projectId/api-keys` - List all API keys for a project
-- `POST /api/v1/projects/:projectId/api-keys` - Generate new API key (full key shown only once!)
-- `DELETE /api/v1/projects/:projectId/api-keys/:keyId` - Revoke an API key
+#### 🔑 API Keys (`/api/v1/projects/:projectId/api-keys`)
+Generate secure API keys for event tracking.
 
-**Authentication**: Bearer token required
+```bash
+# Generate new API key
+POST /api/v1/projects/:projectId/api-keys
+{
+  "name": "Production Key",
+  "description": "Main website tracking"
+}
 
-**Security Note**: Full API keys are only shown once upon creation. Save them securely!
+# Response includes full key (shown only once!)
+{
+  "key": "ap_abc123def456...",
+  "keyPrefix": "ap_abc123..."
+}
+```
+
+#### 📊 Analytics Data (`/api/v1/projects/:id`)
+
+```bash
+# Historical analytics
+GET /api/v1/projects/:id/analytics?startDate=2025-01-01&endDate=2025-01-31&granularity=day
+
+# Real-time analytics
+GET /api/v1/projects/:id/realtime
+
+# Export data
+GET /api/v1/projects/:id/analytics/export?format=csv&startDate=2025-01-01
+```
+
+#### 📍 Event Tracking (`/api/v1/track`)
+
+```bash
+# Track single event
+POST /api/v1/track/event
+Headers: X-API-Key: your-api-key
+{
+  "event_type": "pageview",
+  "url": "https://example.com/products",
+  "referrer": "https://google.com",
+  "utm_params": {
+    "utm_source": "google",
+    "utm_medium": "cpc",
+    "utm_campaign": "spring_sale"
+  }
+}
+
+# Track batch events (up to 100)
+POST /api/v1/track/batch
+Headers: X-API-Key: your-api-key
+{
+  "events": [...]
+}
+```
+
+#### 🎯 Goals & Conversions (`/api/v1/projects/:id/goals`)
+
+```bash
+# Create goal
+POST /api/v1/projects/:id/goals
+{
+  "name": "Newsletter Signup",
+  "goal_type": "event",
+  "target_event_name": "newsletter_signup"
+}
+
+# Get conversion funnel
+POST /api/v1/projects/:id/goals/funnel
+{
+  "goal_ids": ["goal-1", "goal-2", "goal-3"],
+  "start_date": "2025-01-01",
+  "end_date": "2025-01-31"
+}
+```
+
+#### 📈 Campaign Analytics (`/api/v1/projects/:id/campaigns`)
+
+```bash
+# Get campaign stats
+GET /api/v1/projects/:id/campaigns?startDate=2025-01-01&endDate=2025-01-31
+
+# Compare campaigns
+POST /api/v1/projects/:id/campaigns/compare
+{
+  "campaigns": ["spring_sale", "summer_promo"],
+  "start_date": "2025-01-01",
+  "end_date": "2025-06-30"
+}
+
+# Top campaigns by metric
+GET /api/v1/projects/:id/campaigns/top?metric=conversions&limit=10
+```
+
+#### 📧 Email Reporting (`/api/v1/projects/:id/email-preferences`)
+
+```bash
+# Configure email reports
+PUT /api/v1/projects/:id/email-preferences
+{
+  "daily_report_enabled": true,
+  "daily_report_time": "09:00",
+  "weekly_report_enabled": true,
+  "weekly_report_day": "monday",
+  "timezone": "America/New_York"
+}
+
+# Send test report
+POST /api/v1/projects/:id/email-preferences/test
+```
+
+### Rate Limiting
+
+- **Tracking APIs**: 10,000 requests/hour per API key
+- **Management APIs**: Standard rate limits apply
+- **Batch Tracking**: Max 100 events per request, 100KB payload limit
 
 ### Interactive Documentation
 
 When the server is running, visit `/api-docs` for:
 - Complete endpoint specifications
 - Request/response schemas
-- Interactive API testing
-- Authentication requirements
+- Interactive API testing with authentication
 - Example requests and responses
+- Error code documentation
 
-The interactive documentation allows direct testing of endpoints from your browser with proper authentication.
+For complete API documentation, see [API_REFERENCE.md](./docs/API_REFERENCE.md).
 
 ## Authentication Setup
 
