@@ -13,6 +13,7 @@ import campaignsRouter from '../../campaigns';
 import exportRouter from '../../export';
 import goalsRouter from '../../goals';
 import partitionsRouter from '../../partitions';
+import performanceRouter from '../../performance';
 
 /**
  * API Version 1 Router
@@ -54,6 +55,8 @@ const v1Router = Router();
  *     description: Goal and conversion tracking endpoints
  *   - name: Partitions
  *     description: Database partition management and monitoring endpoints
+ *   - name: Performance
+ *     description: System performance monitoring and metrics endpoints
  */
 
 // Mount authentication routes
@@ -104,6 +107,10 @@ v1Router.use('/projects', goalsRouter);
 // Endpoints: /api/v1/partitions/health, /api/v1/partitions/list, /api/v1/partitions/maintenance
 v1Router.use('/partitions', partitionsRouter);
 
+// Mount performance routes
+// Endpoints: /api/v1/performance, /api/v1/performance/queries, /api/v1/performance/cache, /api/v1/performance/database
+v1Router.use('/performance', performanceRouter);
+
 /**
  * @openapi
  * /api/v1:
@@ -148,6 +155,7 @@ v1Router.get('/', (req, res) => {
       campaigns: '/api/v1/projects/:id/campaigns',
       goals: '/api/v1/projects/:id/goals',
       partitions: '/api/v1/partitions',
+      performance: '/api/v1/performance',
       export: {
         analytics: '/api/v1/projects/:id/analytics/export',
         events: '/api/v1/projects/:id/events/export',
