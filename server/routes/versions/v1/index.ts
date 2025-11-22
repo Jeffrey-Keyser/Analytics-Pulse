@@ -11,6 +11,7 @@ import analyticsRouter from '../../analytics';
 import eventsRouter from '../../events';
 import campaignsRouter from '../../campaigns';
 import exportRouter from '../../export';
+import goalsRouter from '../../goals';
 
 /**
  * API Version 1 Router
@@ -48,6 +49,8 @@ const v1Router = Router();
  *     description: Campaign analytics and UTM parameter tracking
  *   - name: Export
  *     description: Data export endpoints for analytics, events, and campaigns
+ *   - name: Goals
+ *     description: Goal and conversion tracking endpoints
  */
 
 // Mount authentication routes
@@ -89,6 +92,10 @@ v1Router.use('/projects', campaignsRouter);
 // Mount export routes
 // Endpoints: /api/v1/projects/:id/analytics/export, /api/v1/projects/:id/events/export, /api/v1/projects/:id/campaigns/export
 v1Router.use('/projects', exportRouter);
+
+// Mount goals routes
+// Endpoints: /api/v1/projects/:id/goals, /api/v1/projects/:id/goals/:goalId, /api/v1/projects/:id/goals/completions, /api/v1/projects/:id/goals/funnel
+v1Router.use('/projects', goalsRouter);
 
 /**
  * @openapi
@@ -132,6 +139,7 @@ v1Router.get('/', (req, res) => {
       realtime: '/api/v1/projects/:id/realtime',
       events: '/api/v1/projects/:id/events',
       campaigns: '/api/v1/projects/:id/campaigns',
+      goals: '/api/v1/projects/:id/goals',
       export: {
         analytics: '/api/v1/projects/:id/analytics/export',
         events: '/api/v1/projects/:id/events/export',
