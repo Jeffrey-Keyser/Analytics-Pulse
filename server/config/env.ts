@@ -44,6 +44,13 @@ interface AppConfig {
   PAY_SERVICE_URL: string;
   // Optional fields - not validated as required
   PAY_SERVICE_TOKEN?: string;
+  REDIS_URL?: string;
+  REDIS_HOST?: string;
+  REDIS_PORT: number;
+  REDIS_PASSWORD?: string;
+  REDIS_DB: number;
+  ENABLE_QUERY_MONITORING: boolean;
+  SLOW_QUERY_THRESHOLD_MS: number;
   databaseConfig: DatabaseConfig;
 }
 
@@ -93,10 +100,10 @@ function validateAndLoadConfig(): AppConfig {
     DATABASE_PASSWORD: databaseConfig.password,
     DATABASE_PORT: databaseConfig.port,
     DATABASE_SSL: databaseConfig.ssl ? "true" : "false",
-    DATABASE_POOL_MAX: "5",
-    DATABASE_POOL_MIN: "0",
-    DATABASE_POOL_ACQUIRE_TIMEOUT: "30000",
-    DATABASE_POOL_IDLE_TIMEOUT: "10000",
+    DATABASE_POOL_MAX: process.env.DATABASE_POOL_MAX || "20",
+    DATABASE_POOL_MIN: process.env.DATABASE_POOL_MIN || "2",
+    DATABASE_POOL_ACQUIRE_TIMEOUT: process.env.DATABASE_POOL_ACQUIRE_TIMEOUT || "30000",
+    DATABASE_POOL_IDLE_TIMEOUT: process.env.DATABASE_POOL_IDLE_TIMEOUT || "10000",
     ORIGIN_BASE_URL: process.env.ORIGIN_BASE_URL || "",
     CORS_ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS || process.env.ORIGIN_BASE_URL || "http://localhost:3000",
     SESSION_SECRET: process.env.SESSION_SECRET || "",
@@ -105,6 +112,13 @@ function validateAndLoadConfig(): AppConfig {
     PAY_SERVICE_URL:
       process.env.PAY_SERVICE_URL || "https://pay.jeffreykeyser.net",
     PAY_SERVICE_TOKEN: process.env.PAY_SERVICE_TOKEN,
+    REDIS_URL: process.env.REDIS_URL,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: parseInt(process.env.REDIS_PORT || "6379", 10),
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    REDIS_DB: parseInt(process.env.REDIS_DB || "0", 10),
+    ENABLE_QUERY_MONITORING: process.env.ENABLE_QUERY_MONITORING !== "false",
+    SLOW_QUERY_THRESHOLD_MS: parseInt(process.env.SLOW_QUERY_THRESHOLD_MS || "100", 10),
     databaseConfig,
   };
 
