@@ -1,0 +1,58 @@
+{
+  "name": "@analytics-pulse/tracking-library",
+  "version": "0.1.0",
+  "description": "Lightweight JavaScript tracking library for Analytics Pulse",
+  "main": "dist/analytics-pulse.cjs.js",
+  "module": "dist/analytics-pulse.esm.js",
+  "browser": "dist/analytics-pulse.min.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build:types && npm run build:bundle",
+    "build:types": "tsc",
+    "build:bundle": "rollup -c",
+    "size": "npm run size:min && npm run size:esm && npm run size:cjs",
+    "size:min": "gzip-size dist/analytics-pulse.min.js --include-original",
+    "size:esm": "gzip-size dist/analytics-pulse.esm.js --include-original",
+    "size:cjs": "gzip-size dist/analytics-pulse.cjs.js --include-original",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "analytics",
+    "tracking",
+    "privacy-focused",
+    "web-analytics"
+  ],
+  "author": "Analytics Pulse",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jeffrey-Keyser/Analytics-Pulse.git",
+    "directory": "tracking-library"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
+    "gzip-size-cli": "^5.1.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "rollup": "^4.32.1",
+    "rollup-plugin-filesize": "^10.0.0",
+    "ts-jest": "^29.4.5",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
