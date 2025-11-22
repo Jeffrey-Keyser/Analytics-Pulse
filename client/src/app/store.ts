@@ -1,12 +1,15 @@
 import { createAppStore } from "@jeffrey-keyser/redux-app-toolkit";
 import { ThunkAction, Action } from "@reduxjs/toolkit";
-import { diagnosticsApi, userApi } from "../reducers";
+import { diagnosticsApi, projectsApi, apiKeysApi, analyticsApi, eventsApi } from "../reducers";
 
 // Create the store using the package
 const storeConfig = createAppStore({
   apis: {
     [diagnosticsApi.reducerPath]: diagnosticsApi,
-    [userApi.reducerPath]: userApi,
+    [projectsApi.reducerPath]: projectsApi,
+    [apiKeysApi.reducerPath]: apiKeysApi,
+    [analyticsApi.reducerPath]: analyticsApi,
+    [eventsApi.reducerPath]: eventsApi,
   },
 });
 
@@ -28,7 +31,10 @@ export function createStore(preloadedState?: any) {
   return createAppStore({
     apis: {
       [diagnosticsApi.reducerPath]: diagnosticsApi,
-      [userApi.reducerPath]: userApi,
+      [projectsApi.reducerPath]: projectsApi,
+      [apiKeysApi.reducerPath]: apiKeysApi,
+      [analyticsApi.reducerPath]: analyticsApi,
+      [eventsApi.reducerPath]: eventsApi,
     },
     preloadedState,
   }).store;

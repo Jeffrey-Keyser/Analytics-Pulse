@@ -1,0 +1,107 @@
+.card {
+  background: var(--surface-color, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.statusBadge {
+  margin-left: 1rem;
+}
+
+.activeStatus,
+.inactiveStatus {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.activeStatus {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.inactiveStatus {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.description {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: var(--surface-secondary, #f9fafb);
+  border-radius: 4px;
+}
+
+.metadata {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.metadataItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.deleteConfirm {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: var(--surface-color, #1f2937);
+    border-color: var(--border-color, #374151);
+  }
+
+  .description {
+    background-color: var(--surface-secondary, #111827);
+  }
+
+  .metadata {
+    border-top-color: var(--border-color, #374151);
+  }
+
+  .activeStatus {
+    background-color: #064e3b;
+    color: #86efac;
+  }
+
+  .inactiveStatus {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+  }
+}

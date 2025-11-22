@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
+    setupFiles: ["./src/test/setup.tsx"],
     css: true,
     coverage: {
       reporter: ["text", "json", "html"],
@@ -24,6 +24,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
+      "@jeffrey-keyser/personal-ui-kit": "/home/user/Analytics-Pulse/client/node_modules/@jeffrey-keyser/personal-ui-kit/dist/index.esm.js",
     },
   },
 });
