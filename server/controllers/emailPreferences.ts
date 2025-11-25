@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ApiError } from '@jeffrey-keyser/api-errors';
+import { ApiError } from '../utils/errors';
 import emailPreferencesDal from '../dal/emailPreferences';
 import emailReportsDal from '../dal/emailReports';
 import emailReportingService from '../services/emailReporting';

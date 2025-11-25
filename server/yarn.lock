@@ -941,7 +941,7 @@
     connect-pg-simple "^9.0.1"
     pg "^8.11.3"
 
-"@jeffrey-keyser/express-middleware-suite@^1.1.0", "@jeffrey-keyser/express-middleware-suite@^1.2.0":
+"@jeffrey-keyser/express-middleware-suite@^1.1.0":
   version "1.2.0"
   resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/express-middleware-suite/1.2.0/9d639fd390cda6f5a210c07ff24e298f4f2cdb45"
   integrity sha512-B/ABZAEBlHntqjqw0W1tDcoUuUGyRmTd0gs0YynJ0PQ81hS/POgotUJEg/l/ANZ3YS+EHiuoEkyS6MZ01T/uvw==
@@ -952,15 +952,17 @@
     http-errors "^1.6.3"
     morgan "^1.9.1"
 
-"@jeffrey-keyser/express-server-factory@^1.2.0":
-  version "1.2.0"
-  resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/express-server-factory/1.2.0/9cc0e6a7177227c6a838ed6c4de45026e73a4501"
-  integrity sha512-4nkxXFJtwOrSYR/JUehuZaD27Bka5si3u8EaZKZSQKos5B0arRrtTBLe6iLK27bzKXZL4aAInxR32zXgB8jNsQ==
+"@jeffrey-keyser/express-server-factory@^2.0.0":
+  version "2.0.0"
+  resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/express-server-factory/2.0.0/cd0e331b41889025401d2f77a7d1932233832b23"
+  integrity sha512-oygAwUu5fk6e/w0qZ7rRzHhWnzOcoDRs6LDq8pbodcxZN05Rgqn5YZFxsiMN0Kafy50ZtGCqE3fJAtj4+1T1mA==
   dependencies:
     express "^4.16.0 || ^5.0.0"
     serverless-http "^3.2.0"
     swagger-jsdoc "^6.2.8"
     swagger-ui-express "^5.0.0"
+    yaml "^2.3.0"
+    zod "^4.1.13"
   optionalDependencies:
     "@jeffrey-keyser/database-base-config" "^1.0.0"
     "@jeffrey-keyser/express-middleware-suite" "^1.1.0"
@@ -972,29 +974,12 @@
     helmet "^7.2.0"
     morgan "^1.10.1"
 
-"@jeffrey-keyser/pay-api-types@^1.1.4", "@jeffrey-keyser/pay-api-types@^1.2.2":
-  version "1.3.0"
-  resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/pay-api-types/1.3.0/920252225dda21446774fc44313bfb169cb6fc46"
-  integrity sha512-i9l8D92Qdy68Rh7X6TMqrwt4cpcAkOLBfAePOODyghHHrCRW1PhmcPS3honh3t65Jhwhd5h3hrCRJQcO3UlPKQ==
-  dependencies:
-    "@jeffrey-keyser/pay-api-types" "^1.2.2"
-
 "@jeffrey-keyser/pay-api-types@^3.4.0", "@jeffrey-keyser/pay-api-types@^3.6.0":
   version "3.6.0"
   resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/pay-api-types/3.6.0/45cd4161cc78ca61f000847e828cca948d8af325"
   integrity sha512-ws9kS44yP8zl0lsMBrYs2H+JAkb90ACYeplJBcmHiCh+bo2cRKcRPEKnuI0SC6rbKnAdwxiXkgeawSyRpr1arg==
 
-"@jeffrey-keyser/pay-auth-integration@^2.1.0":
-  version "2.12.0"
-  resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/pay-auth-integration/2.12.0/a212d26954762e049cd72c50ba6fe9aadfdeb737"
-  integrity sha512-5Gr3tK8XyiYMG9RXTR3fU1EzQzKdlRWr/1UQWx6HhSLiEKPkPCQ0ceM8rDYfF56hasB4vqCkwaW98hOKgpv7NA==
-  dependencies:
-    "@jeffrey-keyser/pay-api-types" "^1.1.4"
-    "@jeffrey-keyser/personal-ui-kit" "^0.1.11"
-    i18next "^24.2.3"
-    react-i18next "^15.4.1"
-
-"@jeffrey-keyser/pay-auth-integration@^5.0.0":
+"@jeffrey-keyser/pay-auth-integration@^2.1.0", "@jeffrey-keyser/pay-auth-integration@^5.0.0":
   version "5.0.0"
   resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/pay-auth-integration/5.0.0/40f63d28aeeeca2ca2ed58de6763ebee4642480d"
   integrity sha512-vno6V5zxJqgchN7wfAubgBfjgmlZqb60siVKUPbVmBsUovVXMFDYMyUFH56CYmUTukRVFmGiI0JKQAEXLP5ZGg==
@@ -1005,7 +990,7 @@
     i18next "^24.2.3"
     react-i18next "^15.4.1"
 
-"@jeffrey-keyser/personal-ui-kit@^0.1.11", "@jeffrey-keyser/personal-ui-kit@^0.1.12":
+"@jeffrey-keyser/personal-ui-kit@^0.1.12":
   version "0.1.13"
   resolved "https://npm.pkg.github.com/download/@jeffrey-keyser/personal-ui-kit/0.1.13/48cc5a9d0c305bea5c8173dc6a22b1cf191406d7"
   integrity sha512-8Lz9IE9mxjORpMb2SF1Xqs6iD5ZrxSfegGWpW7olMp4dqvC6+6DJgo3HX7eYzzRB5vFEdp70ebp04Wal2ZB21w==
@@ -1824,6 +1809,11 @@
   resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
+"@types/aws-lambda@^8.10.149":
+  version "8.10.159"
+  resolved "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.159.tgz"
+  integrity sha512-SAP22WSGNN12OQ8PlCzGzRCZ7QDCwI85dQZbmpz7+mAk+L7j+wI7qnvmdKh+o7A5LaOp6QnOZ2NJphAZQTTHQg==
+
 "@types/babel__core@^7.20.5":
   version "7.20.5"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz"
@@ -1943,13 +1933,6 @@
   version "2.0.4"
   resolved "https://registry.npmjs.org/@types/http-errors/-/http-errors-2.0.4.tgz"
   integrity sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==
-
-"@types/ioredis@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/@types/ioredis/-/ioredis-5.0.0.tgz"
-  integrity sha512-zJbJ3FVE17CNl5KXzdeSPtdltc4tMT3TzC6fxQS0sQngkbFZ6h+0uTafsRqu+eSLIugf6Yb0Ea0SUuRr42Nk9g==
-  dependencies:
-    ioredis "*"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1", "@types/istanbul-lib-coverage@^2.0.6":
   version "2.0.6"
@@ -3251,43 +3234,6 @@ express-validator@^7.3.0:
     lodash "^4.17.21"
     validator "~13.15.15"
 
-express@^4.0.0:
-  version "4.21.2"
-  resolved "https://registry.npmjs.org/express/-/express-4.21.2.tgz"
-  integrity sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==
-  dependencies:
-    accepts "~1.3.8"
-    array-flatten "1.1.1"
-    body-parser "1.20.3"
-    content-disposition "0.5.4"
-    content-type "~1.0.4"
-    cookie "0.7.1"
-    cookie-signature "1.0.6"
-    debug "2.6.9"
-    depd "2.0.0"
-    encodeurl "~2.0.0"
-    escape-html "~1.0.3"
-    etag "~1.8.1"
-    finalhandler "1.3.1"
-    fresh "0.5.2"
-    http-errors "2.0.0"
-    merge-descriptors "1.0.3"
-    methods "~1.1.2"
-    on-finished "2.4.1"
-    parseurl "~1.3.3"
-    path-to-regexp "0.1.12"
-    proxy-addr "~2.0.7"
-    qs "6.13.0"
-    range-parser "~1.2.1"
-    safe-buffer "5.2.1"
-    send "0.19.0"
-    serve-static "1.16.2"
-    setprototypeof "1.2.0"
-    statuses "2.0.1"
-    type-is "~1.6.18"
-    utils-merge "1.0.1"
-    vary "~1.1.2"
-
 "express@^4.16.0 || ^5.0.0", express@^5.0.0, express@^5.1.0, "express@>= 4.11", "express@>=4.0.0 || >=5.0.0-beta":
   version "5.1.0"
   resolved "https://registry.npmjs.org/express/-/express-5.1.0.tgz"
@@ -3820,7 +3766,7 @@ inherits@2, inherits@2.0.4:
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-ioredis@*, ioredis@^5.4.2:
+ioredis@^5.4.2:
   version "5.8.2"
   resolved "https://registry.npmjs.org/ioredis/-/ioredis-5.8.2.tgz"
   integrity sha512-C6uC+kleiIMmjViJINWk80sOQw5lEzse1ZmvD+S/s8p8CWapftSaC+kocGTx6xrbrJ4WmYQGC08ffHLr6ToR6Q==
@@ -6093,6 +6039,11 @@ yallist@^3.0.2:
   resolved "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
 
+yaml@^2.3.0:
+  version "2.8.1"
+  resolved "https://registry.npmjs.org/yaml/-/yaml-2.8.1.tgz"
+  integrity sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==
+
 yaml@2.0.0-1:
   version "2.0.0-1"
   resolved "https://registry.npmjs.org/yaml/-/yaml-2.0.0-1.tgz"
@@ -6144,3 +6095,8 @@ z-schema@^5.0.1:
     validator "^13.7.0"
   optionalDependencies:
     commander "^9.4.1"
+
+zod@^4.1.13:
+  version "4.1.13"
+  resolved "https://registry.npmjs.org/zod/-/zod-4.1.13.tgz"
+  integrity sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==

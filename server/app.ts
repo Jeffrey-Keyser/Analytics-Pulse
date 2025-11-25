@@ -1,8 +1,12 @@
 import {
   createServerlessApp,
+  createServerlessAppSync,
   createDatabaseHealthCheck,
   ServerConfig,
+  ServerlessAppResult,
 } from "@jeffrey-keyser/express-server-factory";
+import type { Handler } from "aws-lambda";
+import type { Application } from "express";
 
 // Routes
 import indexRouter from "./routes/index";
@@ -175,32 +179,8 @@ const serverConfig: ServerConfig = {
         description: "API key for tracking endpoints (format: ap_xxxxxxxxxxxxx). Provide as 'Authorization: Bearer ap_xxxxxxxxxxxxx' or as 'api_key' query parameter. Generate keys via POST /api/v1/projects/:projectId/api-keys",
       },
     },
-    tags: [
-      {
-        name: "Projects",
-        description: "Analytics project management endpoints (requires Bearer token)",
-      },
-      {
-        name: "API Keys",
-        description: "API key generation and management for projects (requires Bearer token)",
-      },
-      {
-        name: "Tracking",
-        description: "Event tracking endpoints (requires API key)",
-      },
-      {
-        name: "Analytics",
-        description: "Analytics data retrieval and reporting (requires Bearer token)",
-      },
-      {
-        name: "Diagnostics",
-        description: "System health and diagnostic endpoints",
-      },
-      {
-        name: "Partitions",
-        description: "Database partition management and monitoring",
-      },
-    ],
+// Note: tags are defined via @swagger JSDoc comments in route files
+    // The tags property is not supported in express-server-factory v2.0.0
     servers: [
       {
         url: `http://localhost:${config.PORT}`,
@@ -252,14 +232,54 @@ const serverConfig: ServerConfig = {
   },
 };
 
-// Create the serverless app
-const app = createServerlessApp(serverConfig);
+// =============================================================================
+// ASYNC APP INITIALIZATION (v2.0.0)
+// =============================================================================
 
-// Export Lambda handler
-export const handler = app.lambdaHandler;
+// Cache for Lambda warm starts
+let cachedApp: ServerlessAppResult | null = null;
 
-// Export Express app for local development
-export const expressApp = app.express;
+/**
+ * Initialize the application asynchronously.
+ * Uses caching to optimize Lambda warm starts.
+ */
+async function initializeApp(): Promise<ServerlessAppResult> {
+  if (cachedApp) {
+    return cachedApp;
+  }
+
+  cachedApp = await createServerlessApp(serverConfig);
+  return cachedApp;
+}
+
+/**
+ * Lambda handler with async initialization.
+ * Caches the app instance for subsequent warm start invocations.
+ */
+export const handler: Handler = async (event: any, context: any, callback: any) => {
+  const app = await initializeApp();
+  return app.lambdaHandler(event, context, callback);
+};
+
+/**
+ * Get the Express app instance asynchronously.
+ * Use this for local development server startup.
+ */
+export async function getExpressApp(): Promise<Application> {
+  const app = await initializeApp();
+  return app.express;
+}
+
+// =============================================================================
+// SYNC EXPORTS FOR BACKWARD COMPATIBILITY
+// =============================================================================
+
+// For test environment and backward compatibility, create a sync version
+// This avoids breaking existing imports that expect synchronous access
+const syncApp = createServerlessAppSync(serverConfig);
+
+// Export Express app for local development (sync for backward compat)
+export const expressApp = syncApp.express;
 
 // Default export for compatibility
-export default app.express;
+export default syncApp.express;

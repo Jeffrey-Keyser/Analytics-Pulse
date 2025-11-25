@@ -11,7 +11,8 @@ import {
 describe("Error Classes", () => {
   describe("ApiError", () => {
     it("should create an error with message and status code", () => {
-      const error = new ApiError(400, "TEST_ERROR", "Test error");
+      // Signature: (code, message, status)
+      const error = new ApiError("TEST_ERROR", "Test error", 400);
 
       expect(error.message).toBe("Test error");
       expect(error.status).toBe(400);
@@ -21,7 +22,7 @@ describe("Error Classes", () => {
     });
 
     it("should have default status code of 500", () => {
-      const error = new ApiError(500, "INTERNAL_SERVER_ERROR", "Server error");
+      const error = new ApiError("INTERNAL_SERVER_ERROR", "Server error");
 
       expect(error.status).toBe(500);
       expect(error.code).toBe("INTERNAL_SERVER_ERROR");
@@ -33,9 +34,9 @@ describe("Error Classes", () => {
       ];
       const metadata = { field: "email" };
       const error = new ApiError(
-        400,
         "VALIDATION_ERROR",
         "Validation failed",
+        400,
         validationErrors,
         metadata
       );

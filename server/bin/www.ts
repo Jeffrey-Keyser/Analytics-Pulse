@@ -1,21 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Development server startup using express-server-factory
+ * Development server startup using express-server-factory v2.0.0
  */
 
-import { createServerlessApp } from '@jeffrey-keyser/express-server-factory';
 import config from '../config/env';
 
-// Import the server configuration from app.ts
-// Note: We can't directly import the config object, so we'll recreate a minimal version
-const { expressApp } = require('../app');
+// Import the Express app (uses sync version for backward compatibility)
+import { expressApp } from '../app';
 
-// Start the server using the factory's built-in server functionality
+// Start the server
 async function startServer() {
   try {
     console.log(`Starting server on port ${config.PORT}...`);
-    
+
     // Use Express directly for development server
     const server = expressApp.listen(config.PORT, () => {
       console.log(`Server listening on port ${config.PORT}`);
@@ -49,4 +47,4 @@ async function startServer() {
   }
 }
 
-startServer(); 
+startServer();
