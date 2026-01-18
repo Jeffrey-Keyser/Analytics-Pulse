@@ -22,6 +22,6 @@
     }
   },
   "include": ["**/*.ts", "types/**/*.d.ts", "types"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "dist", "tests"],
   "files": ["types/express.d.ts"]
 }
