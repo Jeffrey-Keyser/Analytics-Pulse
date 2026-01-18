@@ -37,7 +37,6 @@ jobs:
           working-directory: main/client
           install-command: 'npm ci'
           cache-disabled: false
-          issue_on_failure: "true"
 
   # Run backend tests on pull requests
   test-backend:
@@ -70,7 +69,6 @@ jobs:
           working-directory: main/server
           install-command: 'npm ci'
           cache-disabled: false
-          issue_on_failure: "true"
 
   # Frontend deployment
   deploy-frontend:

@@ -16,7 +16,7 @@ terraform {
   # Configure remote backend (centralized state management)
   backend "s3" {
     bucket = "tf-state-jeffrey-keyser-prod"  
-    key    = "SERVICE_NAME_PLACEHOLDER/terraform.tfstate"
+    key    = "analytics-pulse/terraform.tfstate"
     region = "us-east-1"
   }
 }
@@ -28,7 +28,7 @@ provider "github" {
 
 # Main serverless web infrastructure module
 module "serverless_web_infra" {
-  source = "git::https://github.com/Jeffrey-Keyser/serverless-web-infra.git?ref=v1.5.0"
+  source = "git::https://github.com/Jeffrey-Keyser/serverless-web-infra.git?ref=v2.1.3"
 
   # Core Configuration
   service_name = var.service_name
@@ -68,7 +68,8 @@ module "serverless_web_infra" {
   }
 
   # Container Configuration
-  ecr_force_delete    = var.ecr_force_delete
+  ecr_force_delete     = var.ecr_force_delete
+  skip_bootstrap_image = true  # Image already pushed manually
 
   # Storage Configuration
   s3_force_destroy       = var.s3_force_destroy
