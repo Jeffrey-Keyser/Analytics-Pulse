@@ -15,6 +15,7 @@ import goalsRouter from '../../goals';
 import partitionsRouter from '../../partitions';
 import performanceRouter from '../../performance';
 import emailPreferencesRouter, { unsubscribeRouter } from '../../emailPreferences';
+import { errorReportingRouter, projectErrorsRouter, errorSettingsRouter } from '../../errors';
 
 /**
  * API Version 1 Router
@@ -60,6 +61,8 @@ const v1Router = Router();
  *     description: System performance monitoring and metrics endpoints
  *   - name: Email Reporting
  *     description: Email reporting preferences and scheduled report management
+ *   - name: Error Reporting
+ *     description: Runtime error capture and GitHub issue integration
  */
 
 // Mount authentication routes
@@ -122,6 +125,18 @@ v1Router.use('/projects/:projectId/email-preferences', emailPreferencesRouter);
 // Endpoints: /api/v1/unsubscribe
 v1Router.use('/unsubscribe', unsubscribeRouter);
 
+// Mount error reporting routes (public, uses API key auth)
+// Endpoints: /api/v1/errors, /api/v1/errors/batch
+v1Router.use('/errors', errorReportingRouter);
+
+// Mount project errors routes (user auth)
+// Endpoints: /api/v1/projects/:projectId/errors, /api/v1/projects/:projectId/errors/stats, /api/v1/projects/:projectId/errors/:errorId
+v1Router.use('/projects/:projectId/errors', projectErrorsRouter);
+
+// Mount error settings routes (user auth)
+// Endpoints: /api/v1/projects/:projectId/error-settings
+v1Router.use('/projects/:projectId/error-settings', errorSettingsRouter);
+
 /**
  * @openapi
  * /api/v1:
@@ -173,7 +188,10 @@ v1Router.get('/', (req, res) => {
         campaigns: '/api/v1/projects/:id/campaigns/export'
       },
       emailPreferences: '/api/v1/projects/:id/email-preferences',
-      unsubscribe: '/api/v1/unsubscribe'
+      unsubscribe: '/api/v1/unsubscribe',
+      errors: '/api/v1/errors',
+      projectErrors: '/api/v1/projects/:id/errors',
+      errorSettings: '/api/v1/projects/:id/error-settings'
     }
   });
 });

@@ -65,6 +65,8 @@ try {
       "/api/v1/track", // Event tracking endpoints (uses API key auth)
       "/api/v1/track/event",
       "/api/v1/track/batch",
+      "/api/v1/errors", // Error reporting endpoints (uses API key auth)
+      "/api/v1/errors/batch",
       "/api-docs",
       "/swagger-ui",
       "/",
