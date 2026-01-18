@@ -26,6 +26,29 @@ provider "github" {
   token = var.github_token
 }
 
+# GitHub OIDC Provider for GitHub Actions
+# This must exist before the serverless-web-infra module can use it
+resource "aws_iam_openid_connect_provider" "github" {
+  url = "https://token.actions.githubusercontent.com"
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  # GitHub's current OIDC thumbprint
+  thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
+
+  tags = {
+    Project     = "Analytics-Pulse"
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
+
+  lifecycle {
+    ignore_changes = [thumbprint_list]
+  }
+}
+
 # Main serverless web infrastructure module
 module "serverless_web_infra" {
   source = "git::https://github.com/Jeffrey-Keyser/serverless-web-infra.git?ref=v2.1.3"
@@ -89,9 +112,10 @@ module "serverless_web_infra" {
   enable_api_gateway_logging = var.enable_api_gateway_logging
 
   # GitHub Integration for CI/CD
-  github_owner       = var.github_owner
-  github_repository  = var.github_repository
-  enable_github_oidc = var.enable_github_oidc
+  github_owner              = var.github_owner
+  github_repository         = var.github_repository
+  enable_github_oidc        = var.enable_github_oidc
+  github_oidc_provider_arn  = aws_iam_openid_connect_provider.github.arn
 
   # CORS Configuration
   cors_allowed_origins   = var.cors_allowed_origins
