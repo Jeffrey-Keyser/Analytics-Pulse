@@ -45,7 +45,7 @@ class CacheService {
     }
 
     try {
-      this.redis = new Redis(config.REDIS_URL || {
+      const redisOptions = {
         host: config.REDIS_HOST,
         port: config.REDIS_PORT,
         password: config.REDIS_PASSWORD,
@@ -59,7 +59,11 @@ class CacheService {
           }
           return Math.min(times * 100, 2000);
         },
-      });
+      };
+
+      this.redis = config.REDIS_URL
+        ? new Redis(config.REDIS_URL)
+        : new Redis(redisOptions);
 
       this.redis.on('connect', () => {
         console.log('✅ Redis connected successfully');

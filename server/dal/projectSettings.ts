@@ -81,7 +81,7 @@ export class ProjectSettingsDal extends BaseDal {
       projectId,
       JSON.stringify(DEFAULT_ERROR_REPORTING_SETTINGS)
     ]);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -95,7 +95,7 @@ export class ProjectSettingsDal extends BaseDal {
     `;
 
     const result = await this.query<ProjectSettings>(query, [projectId]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -109,7 +109,7 @@ export class ProjectSettingsDal extends BaseDal {
     `;
 
     const result = await this.query<ProjectSettings>(query, [id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -122,9 +122,9 @@ export class ProjectSettingsDal extends BaseDal {
     if (params.error_reporting) {
       // Deep merge error_reporting settings
       const mergedErrorReporting = this.deepMerge(
-        current.error_reporting,
-        params.error_reporting
-      ) as ErrorReportingSettings;
+        current.error_reporting as unknown as Record<string, unknown>,
+        params.error_reporting as unknown as Record<string, unknown>
+      ) as unknown as ErrorReportingSettings;
 
       const query = `
         UPDATE project_settings
@@ -137,7 +137,7 @@ export class ProjectSettingsDal extends BaseDal {
         JSON.stringify(mergedErrorReporting),
         projectId
       ]);
-      return result.rows[0] || null;
+      return result[0] || null;
     }
 
     return current;
@@ -224,7 +224,7 @@ export class ProjectSettingsDal extends BaseDal {
     `;
 
     const result = await this.query<{ id: string }>(query, [projectId]);
-    return result.rows.length > 0;
+    return result.length > 0;
   }
 
   /**

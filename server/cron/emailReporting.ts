@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import emailReportingService from '../services/emailReporting';
 
 /**
@@ -16,9 +16,9 @@ import emailReportingService from '../services/emailReporting';
  * - Independent schedules for each report type
  */
 
-let dailyReportJob: cron.ScheduledTask | null = null;
-let weeklyReportJob: cron.ScheduledTask | null = null;
-let monthlyReportJob: cron.ScheduledTask | null = null;
+let dailyReportJob: ScheduledTask | null = null;
+let weeklyReportJob: ScheduledTask | null = null;
+let monthlyReportJob: ScheduledTask | null = null;
 
 /**
  * Start daily email report cron job
@@ -49,7 +49,6 @@ export function startDailyReports(): void {
       }
     },
     {
-      scheduled: true,
       timezone: 'UTC'
     }
   );
@@ -86,7 +85,6 @@ export function startWeeklyReports(): void {
       }
     },
     {
-      scheduled: true,
       timezone: 'UTC'
     }
   );
@@ -123,7 +121,6 @@ export function startMonthlyReports(): void {
       }
     },
     {
-      scheduled: true,
       timezone: 'UTC'
     }
   );

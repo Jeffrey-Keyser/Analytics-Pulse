@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import aggregationService from '../services/aggregation';
 
 /**
@@ -17,7 +17,7 @@ import aggregationService from '../services/aggregation';
  * - Timezone-aware (all calculations in UTC)
  */
 
-let cronJob: cron.ScheduledTask | null = null;
+let cronJob: ScheduledTask | null = null;
 
 /**
  * Initialize and start the daily aggregation cron job
@@ -82,7 +82,6 @@ export function startDailyAggregation(): void {
       }
     },
     {
-      scheduled: true,
       timezone: 'UTC' // Ensure cron runs in UTC timezone
     }
   );

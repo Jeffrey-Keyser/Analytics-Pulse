@@ -108,7 +108,7 @@ export class EmailReportsDal extends BaseDal {
     ];
 
     const result = await this.query<EmailReportRow>(query, values);
-    return this.rowToModel(result.rows[0]);
+    return this.rowToModel(result[0]);
   }
 
   /**
@@ -122,7 +122,7 @@ export class EmailReportsDal extends BaseDal {
     `;
 
     const result = await this.query<EmailReportRow>(query, [id]);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -177,7 +177,7 @@ export class EmailReportsDal extends BaseDal {
     values.push(id);
 
     const result = await this.query<EmailReportRow>(query, values);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -268,7 +268,7 @@ export class EmailReportsDal extends BaseDal {
     `;
 
     const countResult = await this.query<{ count: string }>(countQuery, values);
-    const total = parseInt(countResult.rows[0].count, 10);
+    const total = parseInt(countResult[0].count, 10);
 
     // Get paginated results
     const dataQuery = `
@@ -282,7 +282,7 @@ export class EmailReportsDal extends BaseDal {
     const dataResult = await this.query<EmailReportRow>(dataQuery, dataValues);
 
     return {
-      reports: dataResult.rows.map(row => this.rowToModel(row)),
+      reports: dataResult.map(row => this.rowToModel(row)),
       total,
       limit,
       offset
@@ -304,7 +304,7 @@ export class EmailReportsDal extends BaseDal {
     `;
 
     const result = await this.query<EmailReportRow>(query, [recipientEmail, limit]);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -319,7 +319,7 @@ export class EmailReportsDal extends BaseDal {
     `;
 
     const result = await this.query<EmailReportRow>(query, [limit]);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -346,7 +346,7 @@ export class EmailReportsDal extends BaseDal {
       query,
       [projectId, recipientEmail, reportType]
     );
-    return result.rows[0].exists;
+    return result[0].exists;
   }
 
   /**
@@ -360,7 +360,7 @@ export class EmailReportsDal extends BaseDal {
     `;
 
     const result = await this.query<{ id: string }>(query);
-    return result.rows.length;
+    return result.length;
   }
 }
 

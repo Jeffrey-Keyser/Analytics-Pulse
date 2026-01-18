@@ -98,7 +98,7 @@ export class EmailPreferencesDal extends BaseDal {
     ];
 
     const result = await this.query<EmailPreferenceRow>(query, values);
-    return this.rowToModel(result.rows[0]);
+    return this.rowToModel(result[0]);
   }
 
   /**
@@ -112,7 +112,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query, [id]);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -129,7 +129,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query, [projectId, userEmail]);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -143,7 +143,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query, [token]);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -157,7 +157,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query, [projectId]);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -242,7 +242,7 @@ export class EmailPreferencesDal extends BaseDal {
     values.push(id);
 
     const result = await this.query<EmailPreferenceRow>(query, values);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -263,7 +263,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query, [token]);
-    return result.rows[0] ? this.rowToModel(result.rows[0]) : null;
+    return result[0] ? this.rowToModel(result[0]) : null;
   }
 
   /**
@@ -277,7 +277,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -291,7 +291,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -305,7 +305,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<EmailPreferenceRow>(query);
-    return result.rows.map(row => this.rowToModel(row));
+    return result.map(row => this.rowToModel(row));
   }
 
   /**
@@ -319,7 +319,7 @@ export class EmailPreferencesDal extends BaseDal {
     `;
 
     const result = await this.query<{ id: string }>(query, [id]);
-    return result.rows.length > 0;
+    return result.length > 0;
   }
 }
 

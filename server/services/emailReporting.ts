@@ -98,39 +98,42 @@ export class EmailReportingService {
     endDate: Date
   ): Promise<ReportData> {
     try {
-      // Fetch analytics data
-      const analyticsData = await analyticsDal.getAnalytics(projectId, {
-        startDate,
-        endDate,
-        granularity: 'day',
-        limit: 10
-      });
+      const timeRangeParams = { projectId, startDate, endDate };
+
+      // Fetch analytics data using individual DAL methods
+      const [overviewStats, topPages, topReferrers, deviceBreakdown, countryDistribution] = await Promise.all([
+        analyticsDal.getOverviewStats(timeRangeParams),
+        analyticsDal.getTopPages(timeRangeParams, 10),
+        analyticsDal.getTopReferrers(timeRangeParams, 10),
+        analyticsDal.getDeviceBreakdown(timeRangeParams),
+        analyticsDal.getCountryDistribution(timeRangeParams, 10)
+      ]);
 
       // Transform to ReportData format
       const reportData: ReportData = {
         summary: {
-          pageviews: analyticsData.summary.pageviews,
-          uniqueVisitors: analyticsData.summary.uniqueVisitors,
-          sessions: analyticsData.summary.sessions,
-          bounceRate: analyticsData.summary.bounceRate,
-          avgSessionDuration: analyticsData.summary.avgSessionDuration
+          pageviews: overviewStats.pageviews,
+          uniqueVisitors: overviewStats.unique_visitors,
+          sessions: overviewStats.sessions,
+          bounceRate: overviewStats.bounce_rate,
+          avgSessionDuration: overviewStats.avg_session_duration_seconds
         },
-        topPages: analyticsData.topPages?.map(page => ({
+        topPages: topPages.map(page => ({
           url: page.url,
           pageviews: page.pageviews,
-          uniqueVisitors: page.uniqueVisitors
+          uniqueVisitors: page.unique_visitors
         })),
-        topReferrers: analyticsData.topReferrers?.map(ref => ({
+        topReferrers: topReferrers.map(ref => ({
           referrer: ref.referrer,
           sessions: ref.sessions,
-          uniqueVisitors: ref.uniqueVisitors
+          uniqueVisitors: ref.unique_visitors
         })),
-        devices: analyticsData.breakdowns?.devices?.map(device => ({
-          deviceType: device.deviceType,
+        devices: deviceBreakdown.map(device => ({
+          deviceType: device.device_type,
           count: device.count,
           percentage: device.percentage
         })),
-        countries: analyticsData.breakdowns?.countries?.map(country => ({
+        countries: countryDistribution.map(country => ({
           country: country.country,
           visitors: country.visitors,
           percentage: country.percentage
@@ -138,9 +141,10 @@ export class EmailReportingService {
       };
 
       return reportData;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
       console.error('[EmailReportingService] Error fetching analytics data:', error);
-      throw new Error(`Failed to fetch analytics data: ${error.message}`);
+      throw new Error(`Failed to fetch analytics data: ${message}`);
     }
   }
 

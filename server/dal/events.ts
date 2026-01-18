@@ -199,7 +199,7 @@ export class EventsDal extends BaseDal {
     }
 
     const result = await this.query<{ count: string }>(query, values);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -218,7 +218,7 @@ export class EventsDal extends BaseDal {
     `;
 
     const result = await this.query<Event>(query, [projectId, limit]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -233,7 +233,7 @@ export class EventsDal extends BaseDal {
     `;
 
     const result = await this.query<Event>(query, [sessionId]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -293,7 +293,7 @@ export class EventsDal extends BaseDal {
     }
 
     const result = await this.query<Event>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -332,7 +332,7 @@ export class EventsDal extends BaseDal {
     }
 
     const result = await this.query<{ count: string }>(query, values);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -376,7 +376,7 @@ export class EventsDal extends BaseDal {
     }
 
     const result = await this.query<{ event_name: string; count: string }>(query, values);
-    return result.rows.map(row => ({
+    return result.map(row => ({
       event_name: row.event_name,
       count: parseInt(row.count, 10)
     }));

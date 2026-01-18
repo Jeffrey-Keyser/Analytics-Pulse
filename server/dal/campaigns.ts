@@ -137,7 +137,7 @@ export class CampaignsDal extends BaseDal {
     }
 
     const result = await this.query<CampaignStats>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -207,7 +207,7 @@ export class CampaignsDal extends BaseDal {
     `;
 
     const result = await this.query<CampaignComparison>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -273,7 +273,7 @@ export class CampaignsDal extends BaseDal {
     values.push(limit);
 
     const result = await this.query<TopCampaign>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -326,7 +326,7 @@ export class CampaignsDal extends BaseDal {
       values
     );
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       parameter_value: row.parameter_value,
       visits: parseInt(row.visits, 10),
       unique_sessions: parseInt(row.unique_sessions, 10),
@@ -401,7 +401,7 @@ export class CampaignsDal extends BaseDal {
       conversion_rate: string;
     }>(query, values);
 
-    const row = result.rows[0];
+    const row = result[0];
     return {
       campaign_name: row.campaign_name,
       total_sessions: parseInt(row.total_sessions, 10),

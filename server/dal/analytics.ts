@@ -143,7 +143,7 @@ export class AnalyticsDal extends BaseDal {
       params.endDate
     ]);
 
-    return result.rows[0] || {
+    return result[0] || {
       pageviews: 0,
       unique_visitors: 0,
       sessions: 0,
@@ -185,7 +185,7 @@ export class AnalyticsDal extends BaseDal {
       sessions: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       date: row.date.toISOString().split('T')[0],
       pageviews: parseInt(row.pageviews, 10),
       unique_visitors: parseInt(row.unique_visitors, 10),
@@ -214,7 +214,7 @@ export class AnalyticsDal extends BaseDal {
       date_range_end: Date;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    const row = result.rows[0];
+    const row = result[0];
     return {
       unique_visitors: row ? parseInt(row.unique_visitors, 10) : 0,
       date_range_start: row?.date_range_start || params.startDate,
@@ -246,7 +246,7 @@ export class AnalyticsDal extends BaseDal {
       bounce_rate: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    const row = result.rows[0];
+    const row = result[0];
     return {
       bounce_rate: row ? parseFloat(row.bounce_rate) : 0,
       total_sessions: row ? parseInt(row.total_sessions, 10) : 0,
@@ -275,7 +275,7 @@ export class AnalyticsDal extends BaseDal {
       avg_duration_seconds: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    const row = result.rows[0];
+    const row = result[0];
     return {
       avg_duration_seconds: row ? parseInt(row.avg_duration_seconds, 10) : 0,
       total_sessions: row ? parseInt(row.total_sessions, 10) : 0,
@@ -311,7 +311,7 @@ export class AnalyticsDal extends BaseDal {
       unique_visitors: string;
     }>(query, [params.projectId, params.startDate, params.endDate, limit]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       url: row.url,
       pageviews: parseInt(row.pageviews, 10),
       unique_visitors: parseInt(row.unique_visitors, 10)
@@ -345,7 +345,7 @@ export class AnalyticsDal extends BaseDal {
       unique_visitors: string;
     }>(query, [params.projectId, params.startDate, params.endDate, limit]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       referrer: row.referrer,
       sessions: parseInt(row.sessions, 10),
       unique_visitors: parseInt(row.unique_visitors, 10)
@@ -388,7 +388,7 @@ export class AnalyticsDal extends BaseDal {
       percentage: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       device_type: row.device_type,
       count: parseInt(row.count, 10),
       percentage: parseFloat(row.percentage)
@@ -431,7 +431,7 @@ export class AnalyticsDal extends BaseDal {
       percentage: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       browser: row.browser,
       count: parseInt(row.count, 10),
       percentage: parseFloat(row.percentage)
@@ -474,7 +474,7 @@ export class AnalyticsDal extends BaseDal {
       percentage: string;
     }>(query, [params.projectId, params.startDate, params.endDate]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       os: row.os,
       count: parseInt(row.count, 10),
       percentage: parseFloat(row.percentage)
@@ -524,7 +524,7 @@ export class AnalyticsDal extends BaseDal {
       percentage: string;
     }>(query, [params.projectId, params.startDate, params.endDate, limit]);
 
-    return result.rows.map(row => ({
+    return result.map(row => ({
       country: row.country,
       visitors: parseInt(row.visitors, 10),
       sessions: parseInt(row.sessions, 10),
@@ -566,8 +566,8 @@ export class AnalyticsDal extends BaseDal {
       ORDER BY date ASC
     `;
 
-    const result = await this.query(query, [projectId, startDate, endDate]);
-    return result.rows;
+    const result = await this.query<DailyAnalytics>(query, [projectId, startDate, endDate]);
+    return result;
   }
 }
 

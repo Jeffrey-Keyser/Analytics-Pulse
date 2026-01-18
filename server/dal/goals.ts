@@ -107,7 +107,7 @@ export class GoalsDal extends BaseDal {
     ];
 
     const result = await this.query<Goal>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -119,7 +119,7 @@ export class GoalsDal extends BaseDal {
     `;
 
     const result = await this.query<Goal>(query, [id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -141,7 +141,7 @@ export class GoalsDal extends BaseDal {
     query += ` ORDER BY created_at DESC`;
 
     const result = await this.query<Goal>(query, [projectId]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -196,7 +196,7 @@ export class GoalsDal extends BaseDal {
     if (endDate) values.push(endDate);
 
     const result = await this.query<GoalWithStats>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -262,7 +262,7 @@ export class GoalsDal extends BaseDal {
     `;
 
     const result = await this.query<Goal>(query, values);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -274,7 +274,7 @@ export class GoalsDal extends BaseDal {
     `;
 
     const result = await this.query(query, [id]);
-    return result.rowCount !== null && result.rowCount > 0;
+    return result.length > 0;
   }
 
   /**
@@ -301,7 +301,7 @@ export class GoalsDal extends BaseDal {
     ];
 
     const result = await this.query<GoalCompletion>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -344,7 +344,7 @@ export class GoalsDal extends BaseDal {
     values.push(limit, offset);
 
     const result = await this.query<GoalCompletion>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -382,7 +382,7 @@ export class GoalsDal extends BaseDal {
     }
 
     const result = await this.query<{ count: string }>(query, values);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -455,7 +455,7 @@ export class GoalsDal extends BaseDal {
     if (endDate) values.push(endDate);
 
     const result = await this.query<ConversionFunnelStep>(query, values);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -496,7 +496,7 @@ export class GoalsDal extends BaseDal {
     if (endDate) values.push(endDate);
 
     const result = await this.query<{ conversion_rate: number }>(query, values);
-    return result.rows[0]?.conversion_rate || 0;
+    return result[0]?.conversion_rate || 0;
   }
 }
 

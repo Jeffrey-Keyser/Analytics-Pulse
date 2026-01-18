@@ -1,4 +1,5 @@
-FROM public.ecr.aws/lambda/nodejs:20
+# Build stage - compile TypeScript with all dependencies (including devDependencies for types)
+FROM public.ecr.aws/lambda/nodejs:20 AS builder
 
 WORKDIR /var/task
 
@@ -9,8 +10,8 @@ ENV GITHUB_TOKEN=$GITHUB_TOKEN
 # Copy package files and .npmrc first to leverage Docker layer caching
 COPY server/package*.json server/.npmrc ./
 
-# Install dependencies (npm ci for reproducible builds)
-RUN npm ci --omit=dev
+# Install ALL dependencies (including devDependencies for @types/*)
+RUN npm ci
 
 # Remove .npmrc after installation for security
 RUN rm -f .npmrc
@@ -20,6 +21,30 @@ COPY server/ ./
 
 # Build the application
 RUN npm run build
+
+# Production stage - only production dependencies
+FROM public.ecr.aws/lambda/nodejs:20
+
+WORKDIR /var/task
+
+# Accept GitHub token as build argument for private npm packages
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+# Copy package files and .npmrc
+COPY server/package*.json server/.npmrc ./
+
+# Install only production dependencies
+RUN npm ci --omit=dev
+
+# Remove .npmrc after installation for security
+RUN rm -f .npmrc
+
+# Copy built application from builder stage
+COPY --from=builder /var/task/dist ./dist
+
+# Copy any other necessary files (types, config, etc.)
+COPY --from=builder /var/task/types ./types
 
 EXPOSE 80
 EXPOSE 3005

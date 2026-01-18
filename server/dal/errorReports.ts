@@ -106,7 +106,7 @@ export class ErrorReportsDal extends BaseDal {
     ];
 
     const result = await this.query<ErrorReport>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -120,7 +120,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<ErrorReport>(query, [id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -134,7 +134,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<ErrorReport>(query, [projectId, fingerprint]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -174,7 +174,7 @@ export class ErrorReportsDal extends BaseDal {
     ];
 
     const result = await this.query<ErrorReport & { was_inserted: boolean }>(query, values);
-    const row = result.rows[0];
+    const row = result[0]!;
     const { was_inserted, ...error } = row;
 
     return { error, created: was_inserted };
@@ -251,7 +251,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const countResult = await this.query<{ count: string }>(countQuery, values);
-    const total = parseInt(countResult.rows[0].count, 10);
+    const total = parseInt(countResult[0].count, 10);
 
     // Get paginated results
     const dataQuery = `
@@ -265,7 +265,7 @@ export class ErrorReportsDal extends BaseDal {
     const dataResult = await this.query<ErrorReport>(dataQuery, dataValues);
 
     return {
-      errors: dataResult.rows,
+      errors: dataResult,
       total,
       limit,
       offset
@@ -324,7 +324,7 @@ export class ErrorReportsDal extends BaseDal {
     values.push(id);
 
     const result = await this.query<ErrorReport>(query, values);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -339,7 +339,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<ErrorReport>(query, [issueNumber, state, id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -369,7 +369,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<ErrorReport>(query, [projectId, minOccurrences]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -387,7 +387,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<ErrorReport>(query, [projectId, staleDays]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -401,7 +401,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<{ id: string }>(query, [id]);
-    return result.rows.length > 0;
+    return result.length > 0;
   }
 
   /**
@@ -415,7 +415,7 @@ export class ErrorReportsDal extends BaseDal {
     `;
 
     const result = await this.query<{ count: string }>(query, [projectId]);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -450,7 +450,7 @@ export class ErrorReportsDal extends BaseDal {
       last_error_at: Date | null;
     }>(query, [projectId]);
 
-    const row = result.rows[0];
+    const row = result[0]!;
     return {
       totalErrors: parseInt(row.total_errors, 10),
       totalOccurrences: parseInt(row.total_occurrences, 10),

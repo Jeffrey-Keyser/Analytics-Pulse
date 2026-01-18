@@ -96,7 +96,7 @@ export class SessionsDal extends BaseDal {
     ];
 
     const result = await this.query<Session>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -110,7 +110,7 @@ export class SessionsDal extends BaseDal {
     `;
 
     const result = await this.query<Session>(query, [sessionId]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -173,7 +173,7 @@ export class SessionsDal extends BaseDal {
     `;
 
     const result = await this.query<Session>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -230,7 +230,7 @@ export class SessionsDal extends BaseDal {
     ];
 
     const result = await this.query<Session>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -265,7 +265,7 @@ export class SessionsDal extends BaseDal {
     `;
 
     const result = await this.query<Session>(query, [projectId, limit]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -279,7 +279,7 @@ export class SessionsDal extends BaseDal {
     `;
 
     const result = await this.query<{ count: string }>(query, [projectId]);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -299,8 +299,8 @@ export class SessionsDal extends BaseDal {
       [projectId]
     );
 
-    const bounces = parseInt(result.rows[0].bounces, 10);
-    const total = parseInt(result.rows[0].total, 10);
+    const bounces = parseInt(result[0].bounces, 10);
+    const total = parseInt(result[0].total, 10);
 
     if (total === 0) return 0;
     return (bounces / total) * 100;

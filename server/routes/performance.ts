@@ -11,7 +11,7 @@
 import { Router, Request, Response } from 'express';
 import { getQueryStats, analyzeQueryPatterns, resetQueryStats } from '../middleware/queryMonitoring';
 import cacheService from '../services/cache';
-import { getPool } from '@jeffrey-keyser/database-base-config';
+import pool from '../db/connection';
 import config from '../config/env';
 
 const router = Router();
@@ -143,8 +143,6 @@ router.get('/cache', async (req: Request, res: Response) => {
  */
 router.get('/database', async (req: Request, res: Response) => {
   try {
-    const pool = getPool();
-
     const stats = {
       totalConnections: pool.totalCount,
       idleConnections: pool.idleCount,
@@ -209,7 +207,6 @@ async function getPerformanceMetrics() {
     Promise.resolve(analyzeQueryPatterns()),
   ]);
 
-  const pool = getPool();
   const databaseStats = {
     totalConnections: pool.totalCount,
     idleConnections: pool.idleCount,

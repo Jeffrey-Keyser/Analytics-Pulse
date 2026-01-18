@@ -46,7 +46,7 @@ export class ApiKeysDal extends BaseDal {
     ];
 
     const result = await this.query<ApiKey>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -60,7 +60,7 @@ export class ApiKeysDal extends BaseDal {
     `;
 
     const result = await this.query<ApiKey>(query, [keyHash]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -74,7 +74,7 @@ export class ApiKeysDal extends BaseDal {
     `;
 
     const result = await this.query<ApiKey>(query, [id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -88,7 +88,7 @@ export class ApiKeysDal extends BaseDal {
     `;
 
     const result = await this.query<ApiKey>(query, [projectId]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -140,7 +140,7 @@ export class ApiKeysDal extends BaseDal {
     `;
 
     const result = await this.query<{ count: string }>(query, [projectId]);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   /**
@@ -154,7 +154,7 @@ export class ApiKeysDal extends BaseDal {
     `;
 
     const result = await this.query<ApiKey>(query, [prefix]);
-    return result.rows;
+    return result;
   }
 }
 

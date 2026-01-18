@@ -1,8 +1,8 @@
-import { ReportData } from '../../types/models';
+import { ReportData, ReportType } from '../../types/models';
 
 export interface AnalyticsReportTemplateData {
   projectName: string;
-  reportType: 'daily' | 'weekly' | 'monthly';
+  reportType: ReportType;
   startDate: string;
   endDate: string;
   reportData: ReportData;

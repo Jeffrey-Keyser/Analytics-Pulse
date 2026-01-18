@@ -61,7 +61,7 @@ export class ProjectsDal extends BaseDal {
     ];
 
     const result = await this.query<Project>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -75,7 +75,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const result = await this.query<Project>(query, [id]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -89,7 +89,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const result = await this.query<Project>(query, [domain]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -139,7 +139,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const countResult = await this.query<{ count: string }>(countQuery, values);
-    const total = parseInt(countResult.rows[0].count, 10);
+    const total = parseInt(countResult[0].count, 10);
 
     // Get paginated results
     const dataQuery = `
@@ -153,7 +153,7 @@ export class ProjectsDal extends BaseDal {
     const dataResult = await this.query<Project>(dataQuery, dataValues);
 
     return {
-      projects: dataResult.rows,
+      projects: dataResult,
       total,
       limit,
       offset
@@ -208,7 +208,7 @@ export class ProjectsDal extends BaseDal {
     values.push(id);
 
     const result = await this.query<Project>(query, values);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -222,7 +222,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const result = await this.query<{ id: string }>(query, [id]);
-    return result.rows.length > 0;
+    return result.length > 0;
   }
 
   /**
@@ -234,7 +234,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const result = await this.query<{ exists: boolean }>(query, [id]);
-    return result.rows[0].exists;
+    return result[0].exists;
   }
 
   /**
@@ -247,7 +247,7 @@ export class ProjectsDal extends BaseDal {
     `;
 
     const result = await this.query<{ count: string }>(query);
-    return parseInt(result.rows[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 }
 

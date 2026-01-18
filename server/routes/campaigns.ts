@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { authenticate } from '@jeffrey-keyser/pay-auth-integration';
+const { requireAuth } = require('@jeffrey-keyser/pay-auth-integration/server');
 import campaignsDal, { CampaignsDal } from '../dal/campaigns';
 
 const router = Router();
@@ -92,7 +92,7 @@ const router = Router();
  *       404:
  *         description: Project not found
  */
-router.get('/:id/campaigns', authenticate, async (req: Request, res: Response) => {
+router.get('/:id/campaigns', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id: projectId } = req.params;
     const { start_date, end_date, limit, offset } = req.query;
@@ -199,7 +199,7 @@ router.get('/:id/campaigns', authenticate, async (req: Request, res: Response) =
  *       401:
  *         description: Unauthorized
  */
-router.post('/:id/campaigns/compare', authenticate, async (req: Request, res: Response) => {
+router.post('/:id/campaigns/compare', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id: projectId } = req.params;
     const { campaign_names, start_date, end_date } = req.body;
@@ -304,7 +304,7 @@ router.post('/:id/campaigns/compare', authenticate, async (req: Request, res: Re
  *       401:
  *         description: Unauthorized
  */
-router.get('/:id/campaigns/top', authenticate, async (req: Request, res: Response) => {
+router.get('/:id/campaigns/top', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id: projectId } = req.params;
     const { metric, start_date, end_date, limit } = req.query;
@@ -414,7 +414,7 @@ router.get('/:id/campaigns/top', authenticate, async (req: Request, res: Respons
  *       401:
  *         description: Unauthorized
  */
-router.get('/:id/campaigns/by-parameter', authenticate, async (req: Request, res: Response) => {
+router.get('/:id/campaigns/by-parameter', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id: projectId } = req.params;
     const { parameter, start_date, end_date, limit } = req.query;
@@ -519,7 +519,7 @@ router.get('/:id/campaigns/by-parameter', authenticate, async (req: Request, res
  *       401:
  *         description: Unauthorized
  */
-router.get('/:id/campaigns/:campaignName/conversions', authenticate, async (req: Request, res: Response) => {
+router.get('/:id/campaigns/:campaignName/conversions', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id: projectId, campaignName } = req.params;
     const { conversion_event, start_date, end_date } = req.query;

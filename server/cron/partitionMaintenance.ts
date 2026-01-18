@@ -1,6 +1,6 @@
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import logger from '../utils/logger';
-import { pool } from '@jeffrey-keyser/database-base-config';
+import pool from '../db/connection';
 
 /**
  * Partition Maintenance Cron Job
@@ -41,7 +41,7 @@ interface PartitionHealthSummary {
 }
 
 class PartitionMaintenanceService {
-  private job: cron.ScheduledTask | null = null;
+  private job: ScheduledTask | null = null;
   private isRunning = false;
 
   /**

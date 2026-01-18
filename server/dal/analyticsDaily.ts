@@ -104,7 +104,7 @@ export class AnalyticsDailyDal extends BaseDal {
     ];
 
     const result = await this.query<AnalyticsDaily>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -121,7 +121,7 @@ export class AnalyticsDailyDal extends BaseDal {
     `;
 
     const result = await this.query<AnalyticsDaily>(query, [projectId, date]);
-    return result.rows[0] || null;
+    return result[0] || null;
   }
 
   /**
@@ -230,7 +230,7 @@ export class AnalyticsDailyDal extends BaseDal {
     `;
 
     const result = await this.query<AnalyticsDaily>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -288,7 +288,7 @@ export class AnalyticsDailyDal extends BaseDal {
     ];
 
     const result = await this.query<AnalyticsDaily>(query, values);
-    return result.rows[0];
+    return result[0];
   }
 
   /**
@@ -312,7 +312,7 @@ export class AnalyticsDailyDal extends BaseDal {
       startDate,
       endDate
     ]);
-    return result.rows;
+    return result;
   }
 
   /**
@@ -325,7 +325,7 @@ export class AnalyticsDailyDal extends BaseDal {
     `;
 
     const result = await this.query(query, [projectId, date]);
-    return (result.rowCount || 0) > 0;
+    return result.length > 0;
   }
 }
 
