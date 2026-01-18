@@ -145,8 +145,8 @@ jobs:
       - name: Build and Deploy to ECR/Lambda
         uses: ./.github/private-actions/composite-actions/ecr-lambda-deploy
         with:
-          dockerfile-path: main/Dockerfile_Server
-          docker-context: main
+          dockerfile-path: ./main/Dockerfile_Server
+          docker-context: ./main
           ecr-repository: ${{ vars.AWS_ECR_URL }}
           lambda-function-name: ${{ vars.AWS_LAMBDA_FUNCTION_NAME }}
           github-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
