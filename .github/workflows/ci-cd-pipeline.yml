@@ -29,14 +29,12 @@ jobs:
 
       - name: Setup Node.js and Test (Frontend)
         uses: ./.github/private-actions/composite-actions/node-build
-        env:
-          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
         with:
           node-version: '20'
           working-directory: main/client
           install-command: 'npm ci'
           cache-disabled: false
+          github-packages-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
 
   # Run backend tests on pull requests
   test-backend:
@@ -60,15 +58,12 @@ jobs:
 
       - name: Setup Node.js and Test (Backend)
         uses: ./.github/private-actions/composite-actions/node-build
-        env:
-          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          PAY_SERVICE_TOKEN: ${{ secrets.PAY_SERVICE_TOKEN }}
         with:
           node-version: '20'
           working-directory: main/server
           install-command: 'npm ci'
           cache-disabled: false
+          github-packages-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
 
   # Frontend deployment
   deploy-frontend:
@@ -94,8 +89,6 @@ jobs:
       - name: Setup Node.js (Frontend)
         uses: ./.github/private-actions/composite-actions/node-build
         env:
-          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
           VITE_API_URL: ${{ vars.API_BASE_URL }}
           VITE_PAY_URL: ${{ vars.API_BASE_URL }}
         with:
@@ -104,6 +97,7 @@ jobs:
           install-command: 'npm ci'
           build-command: 'npm run build'
           cache-disabled: false
+          github-packages-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -143,15 +137,12 @@ jobs:
 
       - name: Setup Node.js (Backend)
         uses: ./.github/private-actions/composite-actions/node-build
-        env:
-          NPM_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-          PAY_SERVICE_TOKEN: ${{ secrets.PAY_SERVICE_TOKEN }}
         with:
           node-version: '20'
           working-directory: main/server
           install-command: 'npm ci'
           cache-disabled: false
+          github-packages-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
