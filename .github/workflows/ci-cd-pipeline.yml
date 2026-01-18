@@ -135,15 +135,6 @@ jobs:
         with:
           path: main
 
-      - name: Setup Node.js (Backend)
-        uses: ./.github/private-actions/composite-actions/node-build
-        with:
-          node-version: '20'
-          working-directory: main/server
-          install-command: 'npm ci'
-          cache-disabled: false
-          github-packages-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -158,3 +149,4 @@ jobs:
           docker-context: main
           ecr-repository: ${{ vars.AWS_ECR_URL }}
           lambda-function-name: ${{ vars.AWS_LAMBDA_FUNCTION_NAME }}
+          github-token: ${{ secrets.PRIVATE_ACTIONS_TOKEN }}
