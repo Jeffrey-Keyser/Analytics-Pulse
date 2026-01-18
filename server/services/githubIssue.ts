@@ -1,6 +1,19 @@
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 import errorReportsDal, { ErrorReportsDal, ErrorReport, GitHubIssueState } from '../dal/errorReports';
 import projectSettingsDal, { ProjectSettingsDal, ErrorReportingSettings } from '../dal/projectSettings';
+
+// Dynamic import helper for ESM-only @octokit/rest
+let OctokitClass: typeof Octokit | null = null;
+async function getOctokit(): Promise<typeof Octokit> {
+  if (!OctokitClass) {
+    const module = await import('@octokit/rest');
+    OctokitClass = module.Octokit;
+  }
+  return OctokitClass;
+}
+
+// Type alias for Octokit instance
+type OctokitInstance = InstanceType<typeof Octokit>;
 
 interface GitHubIssue {
   number: number;
@@ -77,7 +90,7 @@ export class GitHubIssueService {
       };
     }
 
-    const octokit = this.createOctokit(settings.githubToken!);
+    const octokit = await this.createOctokit(settings.githubToken!);
     const [owner, repo] = settings.githubRepo!.split('/');
 
     // If error already has a GitHub issue, handle it
@@ -166,7 +179,7 @@ export class GitHubIssueService {
    * Handle an existing issue linked to an error
    */
   private async handleExistingIssue(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     error: ErrorReport,
@@ -235,7 +248,7 @@ export class GitHubIssueService {
    * Create a new GitHub issue for an error
    */
   private async createIssue(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     error: ErrorReport,
@@ -259,7 +272,7 @@ export class GitHubIssueService {
    * Find an existing issue by fingerprint
    */
   private async findIssueByFingerprint(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     fingerprint: string,
@@ -290,7 +303,7 @@ export class GitHubIssueService {
    * Find a recent issue (within noise guard window)
    */
   private async findRecentIssue(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     settings: ErrorReportingSettings
@@ -321,7 +334,7 @@ export class GitHubIssueService {
    * Add an occurrence comment to an existing issue
    */
   private async addOccurrenceComment(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     issueNumber: number,
@@ -341,7 +354,7 @@ export class GitHubIssueService {
    * Reopen a closed issue
    */
   private async reopenIssue(
-    octokit: Octokit,
+    octokit: OctokitInstance,
     owner: string,
     repo: string,
     issueNumber: number,
@@ -507,8 +520,9 @@ The error has recurred and requires attention. This suggests the previous fix ma
   /**
    * Create an Octokit instance with the provided token
    */
-  private createOctokit(token: string): Octokit {
-    return new Octokit({
+  private async createOctokit(token: string): Promise<OctokitInstance> {
+    const OctokitConstructor = await getOctokit();
+    return new OctokitConstructor({
       auth: token
     });
   }
@@ -557,7 +571,7 @@ The error has recurred and requires attention. This suggests the previous fix ma
     }
 
     const staleErrors = await this.errorReportsDal.findStaleIssues(projectId, AUTO_CLOSE_STALE_DAYS);
-    const octokit = this.createOctokit(settings.githubToken!);
+    const octokit = await this.createOctokit(settings.githubToken!);
     const [owner, repo] = settings.githubRepo!.split('/');
 
     let closedCount = 0;

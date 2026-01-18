@@ -1,6 +1,15 @@
-import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
+import rateLimit, { RateLimitRequestHandler, ipKeyGenerator } from 'express-rate-limit';
 import { Request, Response, NextFunction } from 'express';
 import config from '../config/env';
+
+/**
+ * Helper to normalize IP addresses for rate limiting using express-rate-limit's
+ * built-in ipKeyGenerator which properly handles IPv6 addresses
+ */
+function normalizeIp(ip: string | undefined): string {
+  if (!ip) return 'unknown';
+  return ipKeyGenerator(ip);
+}
 
 /**
  * Rate limiting configuration
@@ -45,9 +54,9 @@ export const apiKeyRateLimiter: RateLimitRequestHandler = rateLimit({
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false,
 
-  // Use API key as identifier, fallback to IP
+  // Use API key as identifier, fallback to IP (normalized for IPv6)
   keyGenerator: (req: Request) => {
-    return req.apiKeyProjectId || req.apiKeyId || req.ip || 'unknown';
+    return req.apiKeyProjectId || req.apiKeyId || normalizeIp(req.ip);
   },
 
   // Custom error handler
@@ -77,7 +86,7 @@ export const ipRateLimiter: RateLimitRequestHandler = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 
-  // Use IP address as identifier
+  // Use IP address as identifier (normalized for IPv6)
   keyGenerator: (req: Request) => {
     // Get real IP considering proxy headers
     const xForwardedFor = req.headers['x-forwarded-for'];
@@ -85,19 +94,19 @@ export const ipRateLimiter: RateLimitRequestHandler = rateLimit({
     const cfConnectingIp = req.headers['cf-connecting-ip'];
 
     if (typeof cfConnectingIp === 'string') {
-      return cfConnectingIp;
+      return normalizeIp(cfConnectingIp);
     }
 
     if (typeof xRealIp === 'string') {
-      return xRealIp;
+      return normalizeIp(xRealIp);
     }
 
     if (typeof xForwardedFor === 'string') {
       const ips = xForwardedFor.split(',');
-      return ips[0].trim();
+      return normalizeIp(ips[0].trim());
     }
 
-    return req.ip || 'unknown';
+    return normalizeIp(req.ip);
   },
 
   handler: (req: Request, res: Response) => {
@@ -125,8 +134,9 @@ export const burstRateLimiter: RateLimitRequestHandler = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 
+  // Use API key or normalized IP as identifier
   keyGenerator: (req: Request) => {
-    return req.apiKeyProjectId || req.ip || 'unknown';
+    return req.apiKeyProjectId || normalizeIp(req.ip);
   },
 
   handler: (req: Request, res: Response) => {
