@@ -19,7 +19,7 @@
     "@jeffrey-keyser/database-base-config": "^1.1.0",
     "@jeffrey-keyser/express-server-factory": "^2.0.0",
     "@jeffrey-keyser/pay-api-types": "^3.6.0",
-    "@jeffrey-keyser/pay-auth-integration": "^5.0.0",
+    "@jeffrey-keyser/pay-auth-integration": "^6.5.8",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "connect-session-sequelize": "^8.0.2",
