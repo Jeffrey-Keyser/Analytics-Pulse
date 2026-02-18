@@ -1,16 +1,5 @@
 // Error utilities - migrated from express-middleware-suite to express-server-factory v2.0.0
-import {
-  DomainError,
-  NotFoundError as BaseNotFoundError,
-  ValidationError as BaseValidationError,
-  AuthenticationError as BaseAuthenticationError,
-  AuthorizationError as BaseAuthorizationError,
-  ConflictError as BaseConflictError,
-  InternalServerError as BaseInternalServerError,
-  ServiceUnavailableError,
-  StructuredValidationError,
-  ValidationFieldError,
-} from "@jeffrey-keyser/express-server-factory";
+import { ValidationFieldError } from "@jeffrey-keyser/express-server-factory";
 
 export interface ApiErrorResponse {
   success: boolean; // Should always be false for these responses
